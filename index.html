@@ -55,13 +55,16 @@ header.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom
 .iconbtn:hover{background:var(--surface-2)}
 .gear{background:var(--surface);border:1px solid var(--line)}
 nav.tabs{display:flex;gap:4px;background:var(--surface-2);padding:4px;border-radius:12px;margin-bottom:16px;overflow-x:auto}
-nav.tabs button{flex:1;border:0;background:transparent;padding:9px 12px;border-radius:9px;font-weight:600;font-size:14px;color:var(--text-2);white-space:nowrap}
+nav.tabs button{flex:1;border:0;background:transparent;padding:9px 10px;border-radius:9px;font-weight:600;font-size:14px;color:var(--text-2);white-space:nowrap}
 nav.tabs button.on{background:var(--surface);color:var(--text);box-shadow:var(--shadow)}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--shadow);margin-bottom:14px}
 .card h3{margin:0 0 12px;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:space-between;gap:8px}
 .card h3 small{font-weight:500;color:var(--muted);font-size:13px}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
 @media (max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stats.three{grid-template-columns:repeat(3,1fr)}
+@media (max-width:640px){.stats.three{grid-template-columns:1fr 1fr}.stats.three .stat:last-child{grid-column:1/-1}}
+@media (max-width:440px){nav.tabs button{padding:8px 6px;font-size:13px}nav.tabs{gap:2px}}
 .stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;box-shadow:var(--shadow)}
 .stat .l{font-size:12px;color:var(--text-2);font-weight:600;margin-bottom:6px}
 .stat .v{font-size:21px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -73,7 +76,28 @@ nav.tabs button.on{background:var(--surface);color:var(--text);box-shadow:var(--
 .chart svg{display:block;width:100%;height:auto;overflow:visible}
 .tip{position:absolute;pointer-events:none;background:var(--text);color:var(--surface);font-size:12px;padding:6px 9px;border-radius:8px;white-space:nowrap;transform:translate(-50%,-100%);opacity:0;transition:opacity .1s;font-weight:600}
 .tip.show{opacity:1}
-.catrow{display:grid;grid-template-columns:minmax(110px,32%) 1fr auto;align-items:center;gap:10px;padding:7px 0;font-size:14px}
+.catrow{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;padding:8px 6px;font-size:14px;border-radius:9px;transition:background .12s}
+.catrow.hl{background:var(--surface-2)}
+.catrow .pct{color:var(--muted);font-variant-numeric:tabular-nums;font-size:13px;min-width:38px;text-align:right}
+.donutwrap{display:grid;grid-template-columns:220px 1fr;gap:22px;align-items:center}
+@media (max-width:560px){.donutwrap{grid-template-columns:1fr}.donut{max-width:230px;margin:0 auto}}
+.donut{position:relative}
+.donut svg{display:block;width:100%;height:auto}
+.donut .seg{transition:opacity .12s;cursor:pointer}
+.donut .ctr{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;text-align:center}
+.donut .ctr .cl{font-size:12px;color:var(--text-2);font-weight:600}
+.donut .ctr .cv{font-size:19px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.donut .ctr .cs{font-size:12px;color:var(--muted);margin-top:2px}
+.inv{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow);margin-bottom:10px}
+.inv .top{display:flex;align-items:center;gap:12px}
+.inv .ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:20px;flex:none;background:var(--surface-2)}
+.inv .mid{flex:1;min-width:0}
+.inv .t1{font-weight:700;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.inv .t2{font-size:12px;color:var(--muted)}
+.inv .rt{text-align:right}
+.inv .v{font-weight:800;font-size:16px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.inv .pl{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.inv .acts{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
 .catrow .nm{display:flex;align-items:center;gap:8px;min-width:0}
 .catrow .nm span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sw{width:10px;height:10px;border-radius:3px;flex:none}
@@ -119,7 +143,7 @@ nav.tabs button.on{background:var(--surface);color:var(--text);box-shadow:var(--
 .btn.pri:hover{filter:brightness(1.07)}
 .btn.danger{color:var(--crit)}
 .btn.sm{padding:6px 10px;font-size:13px}
-.fab{position:fixed;right:max(20px,calc(50% - 410px));bottom:calc(20px + env(safe-area-inset-bottom));height:56px;padding:0 22px 0 18px;border-radius:999px;border:0;background:var(--accent);color:#fff;font-weight:700;font-size:15px;box-shadow:0 8px 24px rgba(42,120,214,.4);display:flex;align-items:center;gap:8px;z-index:20}
+.fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom));height:56px;padding:0 22px 0 18px;border-radius:999px;border:0;background:var(--accent);color:#fff;font-weight:700;font-size:15px;box-shadow:0 8px 24px rgba(42,120,214,.4);display:flex;align-items:center;gap:8px;z-index:20}
 .fab span{font-size:24px;line-height:1}
 /* modal */
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.42);display:none;align-items:flex-end;justify-content:center;z-index:50;padding:0}
@@ -173,6 +197,7 @@ textarea.fld{min-height:120px;font-family:ui-monospace,monospace;font-size:12px}
   <nav class="tabs" role="tablist">
     <button data-tab="overview" class="on">Обзор</button>
     <button data-tab="history">История</button>
+    <button data-tab="invest">Инвестиции</button>
     <button data-tab="budgets">Бюджеты</button>
     <button data-tab="goals">Цели</button>
   </nav>
@@ -190,7 +215,7 @@ textarea.fld{min-height:120px;font-family:ui-monospace,monospace;font-size:12px}
     </div>
     <div class="card">
       <h3>По категориям <small id="catTotal"></small></h3>
-      <div id="cats"></div>
+      <div class="donutwrap" id="catWrap"><div class="donut" id="catDonut"></div><div id="cats"></div></div>
     </div>
     <div class="card">
       <h3>Последние операции <button class="btn sm" data-goto="history">Все →</button></h3>
@@ -213,6 +238,23 @@ textarea.fld{min-height:120px;font-family:ui-monospace,monospace;font-size:12px}
       <div id="budgets"></div>
       <div class="note">Введите лимит и нажмите Enter или уйдите с поля. Пустое поле — без лимита.</div>
     </div>
+  </section>
+
+  <section id="tab-invest" class="hidden">
+    <div class="stats three">
+      <div class="stat"><div class="l">Портфель сейчас</div><div class="v" id="iVal">—</div><div class="d" id="iValD"></div></div>
+      <div class="stat"><div class="l">Вложено</div><div class="v" id="iInv">—</div><div class="d">своих денег</div></div>
+      <div class="stat"><div class="l">Доход</div><div class="v" id="iPl">—</div><div class="d" id="iPlD"></div></div>
+    </div>
+    <div class="card" id="iAllocCard">
+      <h3>Распределение <small>по типам активов</small></h3>
+      <div class="donutwrap"><div class="donut" id="iDonut"></div><div id="iAlloc"></div></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:4px 0 12px">
+      <b style="font-size:15px">Мои активы</b><button class="btn pri" id="addInv">+ Новый актив</button>
+    </div>
+    <div id="invList"></div>
+    <div class="note">Нажмите «Цена», чтобы обновить текущую стоимость актива. Тогда доход посчитается автоматически.</div>
   </section>
 
   <section id="tab-goals" class="hidden">
@@ -270,6 +312,58 @@ textarea.fld{min-height:120px;font-family:ui-monospace,monospace;font-size:12px}
   </form>
 </div>
 
+<!-- investment modal -->
+<div class="ov" id="invOv">
+  <form class="modal" id="invForm" autocomplete="off">
+    <h2><span id="invTitle">Новый актив</span><button type="button" class="iconbtn" data-close>✕</button></h2>
+    <label class="lbl" for="invName">Название</label>
+    <input class="fld" id="invName" placeholder="Например: Сбер, S&P 500, Bitcoin" maxlength="60">
+    <label class="lbl">Тип</label>
+    <div class="chips" id="invTypes"></div>
+    <label class="lbl" for="invIn">Сколько вложено</label>
+    <input class="fld" id="invIn" inputmode="decimal" placeholder="0">
+    <label class="lbl" for="invNow">Сколько стоит сейчас</label>
+    <input class="fld" id="invNow" inputmode="decimal" placeholder="если пусто — столько же, сколько вложено">
+    <div class="err" id="invErr"></div>
+    <div class="mact">
+      <button type="button" class="btn danger hidden" id="invDel">Удалить</button>
+      <button type="submit" class="btn pri">Сохранить</button>
+    </div>
+  </form>
+</div>
+
+<!-- investment operation modal -->
+<div class="ov" id="invOpOv">
+  <form class="modal" id="invOpForm" autocomplete="off">
+    <h2><span id="invOpTitle">Актив</span><button type="button" class="iconbtn" data-close>✕</button></h2>
+    <div class="seg" id="invOpType">
+      <button type="button" data-v="buy" class="on">Докупить</button>
+      <button type="button" data-v="sell">Продать</button>
+      <button type="button" data-v="price">Цена</button>
+    </div>
+    <div class="note" id="invOpHint" style="margin:-4px 0 10px"></div>
+    <div class="bigamt"><input id="invOpAmt" inputmode="decimal" placeholder="0" aria-label="Сумма"><span class="cur"></span></div>
+    <div class="err" id="invOpErr"></div>
+    <div class="mact"><button type="submit" class="btn pri">Готово</button></div>
+  </form>
+</div>
+
+<!-- currency conversion modal -->
+<div class="ov" id="curOv" style="z-index:55">
+  <form class="modal" id="curForm" autocomplete="off">
+    <h2><span id="curTitle">Смена валюты</span><button type="button" class="iconbtn" data-close>✕</button></h2>
+    <div class="note" id="curInfo" style="font-size:14px;color:var(--text-2)"></div>
+    <label class="lbl" for="curRate" id="curRateLbl">Курс</label>
+    <input class="fld" id="curRate" inputmode="decimal">
+    <div class="note" id="curEx"></div>
+    <div class="err" id="curErr"></div>
+    <div class="mact" style="flex-direction:column">
+      <button type="submit" class="btn pri" id="curGo">Пересчитать все суммы</button>
+      <button type="button" class="btn" id="curOnly">Только сменить значок, без пересчёта</button>
+    </div>
+  </form>
+</div>
+
 <!-- deposit modal -->
 <div class="ov" id="depOv">
   <form class="modal" id="depForm" autocomplete="off">
@@ -291,8 +385,9 @@ textarea.fld{min-height:120px;font-family:ui-monospace,monospace;font-size:12px}
     <label class="lbl" for="setCur">Валюта</label>
     <select class="fld" id="setCur">
       <option value="₽">₽ — рубль</option><option value="₩">₩ — вона</option><option value="$">$ — доллар</option>
-      <option value="€">€ — евро</option><option value="₸">₸ — тенге</option><option value="¥">¥ — юань/иена</option>
+      <option value="€">€ — евро</option><option value="₸">₸ — тенге</option><option value="¥">¥ — юань</option><option value="JP¥">JP¥ — иена</option>
     </select>
+    <div class="note">При смене валюты все суммы можно пересчитать по курсу ЦБ РФ.</div>
     <label class="lbl">Категории расходов</label>
     <div id="catsExp"></div>
     <button class="btn sm" data-addcat="exp">+ Категория расходов</button>
@@ -357,6 +452,7 @@ const DEFAULT_SETTINGS = () => ({
   ],
   budgets: { total: 0, byCat: {} },
   goals: [],
+  investments: [],
 });
 
 // ---------- state ----------
@@ -502,6 +598,7 @@ const store = {
     S.tx.delete(id); render(); this.mark(monthKey(old.date));
   },
   async putSettings() { render(); this.mark("s"); },
+  async putAll() { render(); this.mark("s", ...new Set([...S.tx.values()].map(t => monthKey(t.date)))); },
 };
 function normSettings(s) {
   const d = DEFAULT_SETTINGS();
@@ -517,6 +614,7 @@ function normSettings(s) {
     categories,
     budgets: { total: +(s.budgets && s.budgets.total) || 0, byCat: { ...((s.budgets && s.budgets.byCat) || {}) } },
     goals: Array.isArray(s.goals) ? s.goals.map(g => ({ ...g })) : [],
+    investments: Array.isArray(s.investments) ? s.investments.map(x => ({ ...x })) : [],
   };
 }
 
@@ -576,7 +674,7 @@ function render() {
   $("#mLabel").textContent = `${MONTHS[S.month.m]} ${S.month.y}`;
   $$(".cur").forEach(e => e.textContent = S.settings.currency);
   $(".brand .dot").textContent = S.settings.currency;
-  renderOverview(); renderHistory(); renderBudgets(); renderGoals();
+  renderOverview(); renderHistory(); renderBudgets(); renderGoals(); renderInvest();
   if ($("#setOv").classList.contains("open")) renderSettings();
 }
 
@@ -608,19 +706,31 @@ function renderOverview() {
   $("#dailyAvg").textContent = exp && passed ? `в среднем ${money(exp / passed, 1)} в день` : "";
   drawDaily(days);
 
-  // categories
+  // categories: donut (colored categories individually, the rest folded into "Другое") + full list
   const by = {};
   tx.filter(t => t.type === "exp").forEach(t => { by[t.cat] = (by[t.cat] || 0) + t.amount; });
   const rows = Object.entries(by).sort((a, b) => b[1] - a[1]);
-  $("#catTotal").textContent = rows.length ? `${rows.length} категорий` : "";
-  const max = rows.length ? rows[0][1] : 1;
-  $("#cats").innerHTML = rows.length ? rows.map(([id, v]) => {
-    const c = catInfo(id);
-    return `<div class="catrow" title="${esc(c.name)}: ${esc(money(v))}">
-      <div class="nm"><span class="sw" style="background:${catColor(id)}"></span><span>${esc(c.emoji)} ${esc(c.name)}</span></div>
-      <div class="track"><div class="fill" style="width:${Math.max(2, v / max * 100)}%;background:${catColor(id)}"></div></div>
-      <div class="amt">${esc(money(v, 1))}<small>${Math.round(v / exp * 100)}%</small></div></div>`;
-  }).join("") : `<div class="empty">В этом месяце расходов пока нет</div>`;
+  $("#catTotal").textContent = rows.length ? `${rows.length} ${plural(rows.length, "категория", "категории", "категорий")}` : "";
+  if (!rows.length) {
+    $("#catDonut").innerHTML = ""; $("#catWrap").style.display = "block";
+    $("#cats").innerHTML = `<div class="empty">В этом месяце расходов пока нет</div>`;
+  } else {
+    $("#catWrap").style.display = "";
+    const segs = [], rest = { key: "__rest", label: "Другие категории", value: 0, color: "var(--s0)" };
+    rows.forEach(([id, v]) => {
+      const col = catColor(id);
+      if (col === "var(--s0)") rest.value += v;
+      else segs.push({ key: id, label: catInfo(id).name, value: v, color: col });
+    });
+    if (rest.value) segs.push(rest);
+    $("#cats").innerHTML = rows.map(([id, v]) => {
+      const c = catInfo(id), col = catColor(id);
+      return `<div class="catrow" data-key="${esc(col === "var(--s0)" ? "__rest" : id)}">
+        <div class="nm"><span class="sw" style="background:${col}"></span><span>${esc(c.emoji)} ${esc(c.name)}</span></div>
+        <div class="amt">${esc(money(v, 1))}</div><div class="pct">${pctStr(v / exp)}</div></div>`;
+    }).join("");
+    drawDonut($("#catDonut"), segs, "Расходы", money(exp, 1), $("#cats"));
+  }
 
   const rec = sortTx(tx).slice(0, 5);
   $("#recent").innerHTML = rec.length ? rec.map(txRow).join("") : `<div class="empty">Нажмите «Добавить», чтобы записать первую трату</div>`;
@@ -759,11 +869,157 @@ function renderSettings() {
 }
 
 let rsz; window.addEventListener("resize", () => { clearTimeout(rsz); rsz = setTimeout(renderOverview, 150); });
+// ---------- donut ----------
+function plural(n, one, few, many) { const m10 = n % 10, m100 = n % 100; return m10 === 1 && m100 !== 11 ? one : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? few : many; }
+function pctStr(f) { const p = f * 100; return (p > 0 && p < 1 ? "<1" : Math.round(p)) + "%"; }
+function drawDonut(box, segs, cLabel, cValue, legend) {
+  const total = segs.reduce((s, x) => s + x.value, 0);
+  const R = 100, r = 66, mid = (R + r) / 2, w = R - r, C = 2 * Math.PI * mid;
+  const gap = segs.length > 1 ? 2.5 : 0;
+  let off = 0, g = "";
+  segs.forEach((x, i) => {
+    const len = x.value / total * C;
+    const dash = Math.max(0.6, len - gap);
+    g += `<circle class="seg" data-i="${i}" cx="110" cy="110" r="${mid}" fill="none" stroke="${x.color}" stroke-width="${w}"
+      stroke-dasharray="${dash} ${C - dash}" stroke-dashoffset="${-off}" transform="rotate(-90 110 110)"/>`;
+    off += len;
+  });
+  box.innerHTML = `<svg viewBox="0 0 220 220" role="img" aria-label="${esc(cLabel)}: кольцевая диаграмма">${g}</svg>
+    <div class="ctr"><div class="cl">${esc(cLabel)}</div><div class="cv">${esc(cValue)}</div><div class="cs"></div></div>`;
+  const cl = box.querySelector(".cl"), cv = box.querySelector(".cv"), cs = box.querySelector(".cs");
+  const svg = box.querySelector("svg");
+  const show = i => {
+    const x = segs[i];
+    svg.querySelectorAll(".seg").forEach(s => s.style.opacity = +s.dataset.i === i ? 1 : .3);
+    cl.textContent = x.label; cv.textContent = money(x.value, 1); cs.textContent = pctStr(x.value / total);
+    if (legend) legend.querySelectorAll("[data-key]").forEach(r => r.classList.toggle("hl", r.dataset.key === x.key));
+  };
+  const reset = () => {
+    svg.querySelectorAll(".seg").forEach(s => s.style.opacity = 1);
+    cl.textContent = cLabel; cv.textContent = cValue; cs.textContent = "";
+    if (legend) legend.querySelectorAll(".hl").forEach(r => r.classList.remove("hl"));
+  };
+  svg.querySelectorAll(".seg").forEach(s => { s.addEventListener("mouseenter", () => show(+s.dataset.i)); s.addEventListener("click", e => { e.stopPropagation(); show(+s.dataset.i); }); });
+  svg.addEventListener("mouseleave", reset);
+  if (legend) legend.querySelectorAll("[data-key]").forEach(r => {
+    const i = segs.findIndex(x => x.key === r.dataset.key);
+    if (i < 0) return;
+    r.addEventListener("mouseenter", () => show(i)); r.addEventListener("mouseleave", reset);
+    r.addEventListener("click", () => show(i));
+  });
+}
+
+// ---------- investments ----------
+const INV_TYPES = [
+  { id: "stocks", name: "Акции", emoji: "📈" },
+  { id: "bonds", name: "Облигации", emoji: "📄" },
+  { id: "funds", name: "Фонды / ETF", emoji: "🧺" },
+  { id: "crypto", name: "Криптовалюта", emoji: "🪙" },
+  { id: "deposit", name: "Вклад / счёт", emoji: "🏦" },
+  { id: "other", name: "Другое", emoji: "💼" },
+];
+const invType = id => INV_TYPES.find(t => t.id === id) || INV_TYPES[5];
+const invColor = id => `var(--s${Math.max(0, INV_TYPES.findIndex(t => t.id === id)) + 1})`;
+const plHtml = (pl, base) => {
+  const cls = pl > 0 ? "pos" : pl < 0 ? "neg" : "";
+  const arrow = pl > 0 ? "▲ +" : pl < 0 ? "▼ −" : "";
+  const pc = base > 0 ? ` (${pl < 0 ? "−" : pl > 0 ? "+" : ""}${nf.format(Math.abs(Math.round(pl / base * 1000) / 10))}%)` : "";
+  return `<span class="${cls}">${arrow}${esc(money(Math.abs(pl), 1))}${pc}</span>`;
+};
+function renderInvest() {
+  const A = S.settings.investments;
+  const val = A.reduce((s, x) => s + (+x.value || 0), 0), inv = A.reduce((s, x) => s + (+x.invested || 0), 0), pl = val - inv;
+  $("#iVal").textContent = money(val, 1);
+  $("#iValD").textContent = A.length ? `${A.length} ${plural(A.length, "актив", "актива", "активов")}` : "активов пока нет";
+  $("#iInv").textContent = money(inv, 1);
+  $("#iPl").innerHTML = A.length ? plHtml(pl, inv) : "—";
+  $("#iPlD").textContent = A.length ? (pl > 0 ? "вы в плюсе" : pl < 0 ? "пока в минусе" : "без изменений") : "";
+  const byT = {}; A.forEach(x => { byT[x.type] = (byT[x.type] || 0) + (+x.value || 0); });
+  const tRows = Object.entries(byT).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]);
+  $("#iAllocCard").classList.toggle("hidden", !tRows.length);
+  if (tRows.length) {
+    $("#iAlloc").innerHTML = tRows.map(([t, v]) => { const T = invType(t);
+      return `<div class="catrow" data-key="${t}"><div class="nm"><span class="sw" style="background:${invColor(t)}"></span><span>${T.emoji} ${esc(T.name)}</span></div>
+        <div class="amt">${esc(money(v, 1))}</div><div class="pct">${pctStr(v / val)}</div></div>`; }).join("");
+    drawDonut($("#iDonut"), tRows.map(([t, v]) => ({ key: t, label: invType(t).name, value: v, color: invColor(t) })), "Портфель", money(val, 1), $("#iAlloc"));
+  }
+  $("#invList").innerHTML = A.length ? [...A].sort((a, b) => b.value - a.value).map(x => {
+    const T = invType(x.type), p = (+x.value || 0) - (+x.invested || 0);
+    return `<div class="inv"><div class="top">
+      <div class="ic" style="box-shadow:inset 0 0 0 2px color-mix(in srgb, ${invColor(x.type)} 50%, transparent)">${T.emoji}</div>
+      <div class="mid"><div class="t1">${esc(x.name)}</div><div class="t2">${esc(T.name)} · вложено ${esc(money(x.invested, 1))}</div></div>
+      <div class="rt"><div class="v">${esc(money(x.value, 1))}</div><div class="pl">${plHtml(p, x.invested)}</div></div></div>
+      <div class="acts"><button class="btn sm pri" data-iop="buy" data-inv="${esc(x.id)}">Докупить</button>
+      <button class="btn sm" data-iop="sell" data-inv="${esc(x.id)}">Продать</button>
+      <button class="btn sm" data-iop="price" data-inv="${esc(x.id)}">Цена</button>
+      <button class="btn sm" data-iedit="${esc(x.id)}" style="margin-left:auto" aria-label="Изменить">✎</button></div></div>`;
+  }).join("") : `<div class="card empty">Добавьте первый актив — акции, фонд, крипту или вклад — и следите, сколько он приносит</div>`;
+}
+let invEdit = null, invTypeSel = "stocks";
+function paintInvTypes() { $("#invTypes").innerHTML = INV_TYPES.map(t => `<button type="button" class="chip ${t.id === invTypeSel ? "on" : ""}" data-t="${t.id}">${t.emoji} ${t.name}</button>`).join(""); }
+function openInv(x) {
+  invEdit = x || null; invTypeSel = x ? x.type : "stocks";
+  $("#invTitle").textContent = x ? "Актив" : "Новый актив";
+  $("#invName").value = x ? x.name : ""; $("#invIn").value = x ? x.invested : ""; $("#invNow").value = x ? x.value : "";
+  $("#invDel").classList.toggle("hidden", !x); $("#invErr").textContent = "";
+  paintInvTypes(); open("#invOv"); setTimeout(() => $("#invName").focus(), 50);
+}
+$("#addInv").onclick = () => openInv();
+$("#invTypes").onclick = e => { const b = e.target.closest(".chip"); if (!b) return; invTypeSel = b.dataset.t; paintInvTypes(); };
+$("#invForm").onsubmit = e => {
+  e.preventDefault();
+  const name = $("#invName").value.trim(), invested = parseNum($("#invIn").value);
+  const now = $("#invNow").value.trim() ? parseNum($("#invNow").value) : invested;
+  if (!name) { $("#invErr").textContent = "Назовите актив"; return; }
+  if (!(invested >= 0) || isNaN(invested)) { $("#invErr").textContent = "Укажите, сколько вложено"; return; }
+  if (isNaN(now) || now < 0) { $("#invErr").textContent = "Проверьте текущую стоимость"; return; }
+  const x = { id: invEdit ? invEdit.id : uid(), name, type: invTypeSel, invested, value: now, updated: todayISO() };
+  const A = S.settings.investments, i = A.findIndex(y => y.id === x.id);
+  if (i >= 0) A[i] = x; else A.push(x);
+  store.putSettings(); close($("#invOv")); toast("Актив сохранён");
+};
+let invDelArm = 0;
+$("#invDel").onclick = () => {
+  if (Date.now() - invDelArm > 2500) { invDelArm = Date.now(); $("#invDel").textContent = "Точно удалить?"; setTimeout(() => $("#invDel").textContent = "Удалить", 2500); return; }
+  S.settings.investments = S.settings.investments.filter(y => y.id !== invEdit.id); store.putSettings(); close($("#invOv")); toast("Актив удалён");
+};
+let invOp = null, invOpType = "buy";
+const INV_HINTS = { buy: "Сумма, на которую вы докупили. Добавится и к вложенному, и к стоимости.", sell: "Сумма продажи. Вложенное уменьшится пропорционально.", price: "Сколько актив стоит сейчас целиком — например, по данным брокера." };
+function paintInvOp() {
+  $$("#invOpType button").forEach(b => b.classList.toggle("on", b.dataset.v === invOpType));
+  $("#invOpHint").textContent = INV_HINTS[invOpType];
+  if (invOpType === "price") $("#invOpAmt").value = invOp.value; else if ($("#invOpAmt").value == invOp.value) $("#invOpAmt").value = "";
+}
+document.addEventListener("click", e => {
+  const ed = e.target.closest("[data-iedit]"); if (ed) { openInv(S.settings.investments.find(x => x.id === ed.dataset.iedit)); return; }
+  const b = e.target.closest("[data-iop]"); if (!b) return;
+  invOp = S.settings.investments.find(x => x.id === b.dataset.inv); if (!invOp) return;
+  invOpType = b.dataset.iop; $("#invOpAmt").value = ""; $("#invOpErr").textContent = "";
+  $("#invOpTitle").textContent = `${invType(invOp.type).emoji} ${invOp.name}`;
+  paintInvOp(); open("#invOpOv"); setTimeout(() => { $("#invOpAmt").focus(); $("#invOpAmt").select(); }, 50);
+});
+$("#invOpType").onclick = e => { const b = e.target.closest("button"); if (!b) return; invOpType = b.dataset.v; paintInvOp(); };
+$("#invOpForm").onsubmit = e => {
+  e.preventDefault();
+  const v = parseNum($("#invOpAmt").value);
+  if (isNaN(v) || v < 0 || (invOpType !== "price" && v === 0)) { $("#invOpErr").textContent = "Введите сумму"; return; }
+  const x = invOp, r2 = n => Math.round(n * 100) / 100;
+  if (invOpType === "buy") { x.invested = r2(x.invested + v); x.value = r2(x.value + v); }
+  else if (invOpType === "sell") {
+    if (v > x.value + 0.001) { $("#invOpErr").textContent = `Актив стоит только ${money(x.value)}`; return; }
+    const share = x.value > 0 ? v / x.value : 1;
+    x.invested = r2(x.invested * (1 - share)); x.value = r2(x.value - v);
+  } else x.value = v;
+  x.updated = todayISO();
+  store.putSettings(); close($("#invOpOv"));
+  toast(invOpType === "buy" ? "Докуплено" : invOpType === "sell" ? "Продано" : "Стоимость обновлена");
+};
+
 // ---------- tabs & month ----------
 function setTab(t) {
   S.tab = t;
   $$("nav.tabs button").forEach(b => b.classList.toggle("on", b.dataset.tab === t));
-  ["overview", "history", "budgets", "goals"].forEach(x => $("#tab-" + x).classList.toggle("hidden", x !== t));
+  ["overview", "history", "budgets", "goals", "invest"].forEach(x => $("#tab-" + x).classList.toggle("hidden", x !== t));
   window.scrollTo(0, 0);
 }
 $$("nav.tabs button").forEach(b => b.onclick = () => setTab(b.dataset.tab));
@@ -897,7 +1153,64 @@ $("#depForm").onsubmit = e => {
 
 // settings
 $("#openSettings").onclick = () => { renderSettings(); open("#setOv"); };
-$("#setCur").onchange = e => { S.settings.currency = e.target.value; store.putSettings(); };
+// ---------- currency conversion (CBR rates) ----------
+const CUR_CODE = { "₽": "RUB", "₩": "KRW", "$": "USD", "€": "EUR", "₸": "KZT", "¥": "CNY", "JP¥": "JPY" };
+let cbr = null, cbrDate = "";
+async function loadCbr() {
+  if (cbr) return cbr;
+  const r = await fetch("https://www.cbr-xml-daily.ru/daily_json.js", { cache: "no-store" });
+  if (!r.ok) throw new Error("http " + r.status);
+  const d = await r.json();
+  const m = { RUB: 1 };
+  Object.values(d.Valute || {}).forEach(v => { if (v.Nominal > 0 && v.Value > 0) m[v.CharCode] = v.Value / v.Nominal; });
+  cbr = m; cbrDate = d.Date ? new Date(d.Date).toLocaleDateString("ru-RU") : "";
+  return m;
+}
+const fmtRate = x => x >= 100 ? nf.format(Math.round(x * 100) / 100) : x >= 1 ? nf.format(Math.round(x * 10000) / 10000) : String(+x.toPrecision(5)).replace(".", ",");
+let curFrom = "₽", curTo = "₽", curExact = 0;
+$("#setCur").onchange = async e => {
+  curFrom = S.settings.currency; curTo = e.target.value;
+  e.target.value = curFrom;               // applied only after confirmation
+  if (curFrom === curTo) return;
+  const hasData = S.tx.size || S.settings.goals.length || S.settings.investments.length || S.settings.budgets.total || Object.keys(S.settings.budgets.byCat).length;
+  if (!hasData) { S.settings.currency = curTo; store.putSettings(); return; }
+  $("#curTitle").textContent = `${curFrom} → ${curTo}`;
+  $("#curRateLbl").textContent = `Сколько ${curTo} за 1 ${curFrom}`;
+  curExact = 0; $("#curRate").value = ""; $("#curErr").textContent = ""; $("#curEx").textContent = "";
+  $("#curInfo").textContent = "Загружаем курс ЦБ РФ…";
+  open("#curOv");
+  try {
+    const m = await loadCbr();
+    const a = m[CUR_CODE[curFrom]], b = m[CUR_CODE[curTo]];
+    if (!a || !b) throw new Error("no rate");
+    const f = a / b; curExact = f;
+    $("#curRate").value = fmtRate(f);
+    $("#curInfo").textContent = `Курс ЦБ РФ${cbrDate ? " на " + cbrDate : ""}: 1 ${curFrom} = ${fmtRate(f)} ${curTo}. Можно поправить вручную.`;
+  } catch (err) {
+    $("#curInfo").textContent = "Не удалось загрузить курс ЦБ. Введите курс вручную — например, с сайта cbr.ru.";
+  }
+  updCurEx();
+};
+function updCurEx() {
+  const f = parseNum($("#curRate").value);
+  $("#curEx").textContent = f > 0 ? `Например, 1 000 ${curFrom} станут ${nf.format(Math.round(1000 * f * 100) / 100)} ${curTo}` : "";
+}
+$("#curRate").addEventListener("input", updCurEx);
+$("#curOnly").onclick = () => { S.settings.currency = curTo; store.putSettings(); close($("#curOv")); toast(`Валюта: ${curTo}`); };
+$("#curForm").onsubmit = e => {
+  e.preventDefault();
+  const f = curExact && $("#curRate").value === fmtRate(curExact) ? curExact : parseNum($("#curRate").value);
+  if (!(f > 0)) { $("#curErr").textContent = "Введите курс больше нуля"; return; }
+  const c = n => Math.round((+n || 0) * f * 100) / 100;
+  S.tx.forEach((t, id) => S.tx.set(id, { ...t, amount: c(t.amount) }));
+  const B = S.settings.budgets;
+  B.total = c(B.total); Object.keys(B.byCat).forEach(k => B.byCat[k] = c(B.byCat[k]));
+  S.settings.goals.forEach(g => { g.target = c(g.target); g.saved = c(g.saved); });
+  S.settings.investments.forEach(x => { x.invested = c(x.invested); x.value = c(x.value); });
+  S.settings.currency = curTo;
+  store.putAll(); close($("#curOv")); renderSettings();
+  toast(`Все суммы пересчитаны в ${curTo}`);
+};
 $("#setOv").addEventListener("change", e => {
   const en = e.target.closest("[data-ce],[data-cn]"); if (!en) return;
   const c = catById(en.dataset.ce || en.dataset.cn); if (!c) return;
