@@ -1591,7 +1591,48 @@ $("#copyCsv").onclick = async () => {
 
 // ---------- start ----------
 $("#tab-overview").classList.add("enter");
-initStorage();
+// ---------- entries made in the bot chat ----------
+// The bot stores quick entries ("350 кофе" → Расход → Кафе) on our worker; the app picks them up here,
+// saves them like any other operation, and only then tells the worker to drop them.
+const BOT_API = "https://msp.zafi-offical.workers.dev/api";
+let pulling = false;
+async function pullBot() {
+  if (!tg || !tg.initData || pulling) return;
+  if (store.mode === "cloud" && !store.loaded) return;
+  pulling = true;
+  try {
+    const r = await fetch(BOT_API + "/sync", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        initData: tg.initData,
+        cats: S.settings.categories.map(({ id, name, emoji, type }) => ({ id, name, emoji, type })),
+        currency: S.settings.currency,
+        tz: new Date().getTimezoneOffset(),
+      }),
+    });
+    if (!r.ok) return;
+    const { inbox } = await r.json();
+    if (!Array.isArray(inbox) || !inbox.length) return;
+    const months = new Set(); let added = 0;
+    inbox.forEach(t => {
+      if (!t || !t.id || S.tx.has(t.id) || !(+t.amount > 0) || !/^\d{4}-\d{2}-\d{2}$/.test(t.date || "")) return;
+      S.tx.set(t.id, { id: String(t.id), type: t.type === "inc" ? "inc" : "exp", amount: +t.amount, cat: String(t.cat || ""), date: t.date, note: String(t.note || "").slice(0, 120), created: +t.created || Date.now() });
+      months.add(monthKey(t.date)); added++;
+    });
+    if (added) {
+      store.mark(...months); clearTimeout(store.timer);
+      render();
+      toast(`Из бота: ${added} ${plural(added, "запись", "записи", "записей")}`); haptic("success");
+      await store.flush();
+    }
+    // confirm only what is safely stored
+    if (store.mode === "cloud" && [...months].some(m => store.dirty.has(m))) return;
+    await fetch(BOT_API + "/sync/ack", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ initData: tg.initData, ids: inbox.map(t => t && t.id).filter(Boolean) }) });
+  } catch (e) {} finally { pulling = false; }
+}
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") pullBot(); });
+
+initStorage().then(pullBot);
 })();
 </script>
 </body>
