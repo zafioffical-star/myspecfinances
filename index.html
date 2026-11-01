@@ -262,6 +262,8 @@ nav.tabs button.on::after{content:"";position:absolute;left:0;right:0;bottom:-1p
 .amt,.stat .v,.inv .v,.goal .gv,.tx .sum,.donut .cv{font-feature-settings:"tnum" 1}
 .minus{color:#ff9a3c}
 .v.low{color:var(--warn)}
+.v.half{color:#ff9a3c}
+:root[data-skin=light] .v.half{color:#e07a1f}
 .dayhd .net{color:var(--text)}
 .palpick{display:grid;gap:8px}
 .palopt{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--surface-2);border:1px solid transparent;border-radius:12px;padding:11px 12px;font-weight:600;font-size:14px;text-align:left}
@@ -387,6 +389,48 @@ body.locked .wrap,body.locked .fab{visibility:hidden}
 .themebtn.blink svg{animation:blink .38s ease}
 @keyframes blink{0%,100%{transform:scaleY(1)}45%{transform:scaleY(.08)}}
 html.theming body,html.theming body *{transition:background-color .4s ease,color .4s ease,border-color .4s ease,fill .4s ease,box-shadow .4s ease!important}
+.cmphead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:2px}
+.cmphead .big{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums}
+.cmpline{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;font-size:14px;border-bottom:1px solid var(--line)}
+.cmpline:last-of-type{border-bottom:0}
+.cmpline .nm{display:flex;align-items:center;gap:8px;min-width:0;line-height:1.35}
+.cmpline .ch{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.up{color:var(--exp)} .down{color:var(--inc)}
+.insight{background:var(--surface-2);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--text-2);margin-top:10px;line-height:1.45}
+/* ===== year stats, lock, auto-prices ===== */
+.toggle{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+.toggle:last-child{border-bottom:0}
+.toggle small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.sw2{position:relative;width:44px;height:26px;flex:none}
+.sw2 input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer;z-index:1}
+.sw2 span{position:absolute;inset:0;background:var(--surface-2);border-radius:999px;transition:background .2s;border:1px solid var(--line)}
+.sw2 span::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--muted);transition:transform .2s cubic-bezier(.2,.8,.2,1),background .2s}
+.sw2 input:checked+span{background:var(--inc);border-color:var(--inc)}
+.sw2 input:checked+span::after{transform:translateX(18px);background:#fff}
+.setsec{background:var(--surface-2);border-radius:12px;padding:4px 12px;margin-top:6px}
+.setsec select{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:13px}
+.lock{position:fixed;inset:0;z-index:95;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px}
+.lock.open{display:flex;animation:ovIn .2s ease both}
+.lock h2{margin:0;font-size:20px}
+.lock .dots{display:flex;gap:14px;height:16px}
+.lock .dots i{width:14px;height:14px;border-radius:50%;border:2px solid var(--muted);transition:background .15s,border-color .15s}
+.lock .dots i.f{background:var(--text);border-color:var(--text)}
+.lock .dots.shake{animation:shake .35s}
+@keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.pad{display:grid;grid-template-columns:repeat(3,72px);gap:14px}
+.pad button{height:72px;border-radius:50%;border:0;background:var(--surface-2);font-size:26px;font-weight:600}
+.pad button.ghost{background:transparent;font-size:15px;color:var(--text-2)}
+.lock .lmsg{min-height:18px;font-size:13px;color:var(--muted);text-align:center}
+.yearsum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.yearsum div{background:var(--surface-2);border-radius:10px;padding:10px}
+.yearsum small{display:block;font-size:12px;color:var(--muted)}
+.yearsum b{font-size:15px;font-variant-numeric:tabular-nums}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--text-2);margin-bottom:6px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.chart .ybar{transition:opacity .15s}
+.chart .ybar.dim{opacity:.35}
+#fPeriod{margin-bottom:10px}
+.pricenote{font-size:12px;color:var(--muted);margin-top:4px}
 </style>
 </head>
 <body>
@@ -427,6 +471,10 @@ html.theming body,html.theming body *{transition:background-color .4s ease,color
       <div class="stat"><div class="l">Баланс месяца</div><div class="v" id="sBal">—</div><div class="d" id="sBalD"></div></div>
       <div class="stat"><div class="l">Осталось по бюджету</div><div class="v" id="sLeft">—</div><div class="d" id="sLeftD"></div></div>
     </div>
+    <div class="card hidden" id="cmpCard">
+      <h3>Сравнение с прошлым месяцем <small id="cmpSub"></small></h3>
+      <div id="cmp"></div>
+    </div>
     <div class="card">
       <h3>Расходы по дням <small id="dailyAvg"></small></h3>
       <div class="chart" id="daily"></div>
@@ -442,6 +490,17 @@ html.theming body,html.theming body *{transition:background-color .4s ease,color
   </section>
 
   <section id="tab-history" class="hidden">
+    <div class="seg" id="fPeriod">
+      <button type="button" data-v="month" class="on">Месяц</button>
+      <button type="button" data-v="year">Год</button>
+      <button type="button" data-v="all">Всё время</button>
+    </div>
+    <div class="card hidden" id="yearCard">
+      <h3><span id="yearTitle">Год</span> <small id="yearNav"></small></h3>
+      <div class="legend"><span><i style="background:var(--inc)"></i>Доходы</span><span><i style="background:var(--exp)"></i>Расходы</span></div>
+      <div class="chart" id="yearChart"></div>
+      <div class="yearsum" id="yearSum"></div>
+    </div>
     <div class="filters">
       <input id="q" type="search" placeholder="Поиск">
       <select id="fType"><option value="">Все</option><option value="exp">Расходы</option><option value="inc">Доходы</option></select>
@@ -470,10 +529,10 @@ html.theming body,html.theming body *{transition:background-color .4s ease,color
       <div class="donutwrap"><div class="donut" id="iDonut"></div><div id="iAlloc"></div></div>
     </div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin:4px 0 12px">
-      <b style="font-size:15px">Мои активы</b><button class="btn pri" id="addInv">+ Новый актив</button>
+      <b style="font-size:15px">Мои активы</b><span style="display:flex;gap:6px"><button class="btn sm" id="invRefresh" title="Обновить цены">↻ Цены</button><button class="btn pri" id="addInv">+ Новый актив</button></span>
     </div>
     <div id="invList"></div>
-    <div class="note">Нажмите «Цена», чтобы обновить текущую стоимость актива. Тогда доход посчитается автоматически.</div>
+    <div class="note">Укажите у актива тикер и количество — цена будет обновляться сама. Или нажмите «Цена», чтобы ввести стоимость вручную.</div>
   </section>
 
   <section id="tab-goals" class="hidden">
@@ -539,6 +598,11 @@ html.theming body,html.theming body *{transition:background-color .4s ease,color
     <input class="fld" id="invName" placeholder="Например: Сбер, S&P 500, Bitcoin" maxlength="60">
     <label class="lbl">Тип</label>
     <div class="chips" id="invTypes"></div>
+    <div id="invAuto"><label class="lbl" for="invTicker">Тикер для автоцены (необязательно)</label>
+    <input class="fld" id="invTicker" placeholder="Например: SBER, TMOS, BTC" maxlength="20" style="text-transform:uppercase">
+    <label class="lbl" for="invQty">Количество (шт.)</label>
+    <input class="fld" id="invQty" inputmode="decimal" placeholder="0">
+    <div class="pricenote">С тикером и количеством стоимость обновляется сама: акции, фонды и облигации — с Мосбиржи, крипта — с CoinGecko.</div></div>
     <label class="lbl" for="invIn">Сколько вложено</label>
     <input class="fld" id="invIn" inputmode="decimal" placeholder="0">
     <label class="lbl" for="invNow">Сколько стоит сейчас</label>
@@ -583,6 +647,16 @@ html.theming body,html.theming body *{transition:background-color .4s ease,color
   </form>
 </div>
 
+<!-- PIN setup modal -->
+<div class="ov" id="pinOv" style="z-index:56">
+  <div class="modal" style="text-align:center">
+    <h2><span id="pinTitle">Придумайте PIN-код</span><button type="button" class="iconbtn" data-close>✕</button></h2>
+    <div class="dots" id="pinDots" style="display:flex;gap:14px;justify-content:center;margin:10px 0 18px"></div>
+    <div class="pad" id="pinPad" style="margin:0 auto"></div>
+    <div class="lmsg" id="pinMsg" style="margin-top:12px;font-size:13px;color:var(--muted)"></div>
+  </div>
+</div>
+
 <!-- deposit modal -->
 <div class="ov" id="depOv">
   <form class="modal" id="depForm" autocomplete="off">
@@ -616,6 +690,10 @@ html.theming body,html.theming body *{transition:background-color .4s ease,color
     <div id="catsInc"></div>
     <button class="btn sm" data-addcat="inc">+ Категория доходов</button>
     <div class="note">Удалённая категория пропадёт из списка, но старые операции с ней останутся и будут показаны как «Другое».</div>
+    <label class="lbl">Безопасность</label>
+    <div class="setsec">
+      <div class="toggle"><span>Блокировка приложения<small id="lockSub">PIN-код, а если есть — Face ID / отпечаток</small></span><label class="sw2"><input type="checkbox" id="lockOn"><span></span></label></div>
+    </div>
     <label class="lbl">Экспорт</label>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
             <button class="btn sm" id="copyCsv">Скопировать CSV</button>
@@ -626,6 +704,13 @@ html.theming body,html.theming body *{transition:background-color .4s ease,color
 </div>
 
 <div class="toast" id="toast"></div>
+<div class="lock" id="lock">
+  <div class="brand"><div class="dot" id="lockIco"></div>Мои финансы</div>
+  <h2>Введите PIN-код</h2>
+  <div class="dots" id="lockDots"><i></i><i></i><i></i><i></i></div>
+  <div class="pad" id="lockPad"></div>
+  <div class="lmsg" id="lockMsg"></div>
+</div>
 
 
 <script>
@@ -678,6 +763,7 @@ const DEFAULT_SETTINGS = () => ({
   palette: "brand",
   v3: true,
   theme: "dark",
+  lock: { on: false, pin: "" },
 });
 
 // ---------- state ----------
@@ -842,6 +928,7 @@ function normSettings(s) {
     investments: Array.isArray(s.investments) ? s.investments.map(x => ({ ...x })) : [],
     palette: !s.v3 ? "brand" : (s.palette || "brand"),
     theme: s.theme === "light" ? "light" : "dark",
+    lock: { on: !!(s.lock && s.lock.on && s.lock.pin), pin: (s.lock && s.lock.pin) || "" },
     v3: true,
   };
 }
@@ -904,7 +991,7 @@ function render() {
   $("#mLabel").textContent = `${MONTHS[S.month.m]} ${S.month.y}`;
   $$(".cur").forEach(e => e.textContent = S.settings.currency);
   applySkin(); applyPalette();
-  renderOverview(); renderHistory(); renderBudgets(); renderGoals(); renderInvest();
+  renderOverview(); renderCompare(); renderHistory(); renderBudgets(); renderGoals(); renderInvest();
   if ($("#setOv").classList.contains("open")) renderSettings();
 }
 
@@ -920,16 +1007,16 @@ function renderOverview() {
   const exp = tx.filter(t => t.type === "exp").reduce((s, t) => s + t.amount, 0);
   const inc = tx.filter(t => t.type === "inc").reduce((s, t) => s + t.amount, 0);
   const bal = inc - exp;
-  setNum("#sExp", money(exp, 1), "v" + (exp ? " neg" : ""));
+  setNum("#sExp", money(exp, 1), "v");
   $("#sExpD").textContent = (n => `${n} ${plural(n, "операция", "операции", "операций")}`)(tx.filter(t => t.type === "exp").length);
-  setNum("#sInc", money(inc, 1), "v" + (inc ? " pos" : ""));
+  setNum("#sInc", money(inc, 1), "v");
   $("#sIncD").textContent = (n => `${n} ${plural(n, "операция", "операции", "операций")}`)(tx.filter(t => t.type === "inc").length);
-  setNum("#sBal", (bal > 0 ? "+" : bal < 0 ? "−" : "") + money(Math.abs(bal), 1), "v");
+  setNum("#sBal", (bal > 0 ? "+" : bal < 0 ? "−" : "") + money(Math.abs(bal), 1), "v" + (bal > 0 ? " pos" : bal < 0 ? " neg" : ""));
   $("#sBalD").textContent = inc ? `сохранено ${Math.max(0, Math.round(bal / inc * 100))}% дохода` : "доходов пока нет";
   const tb = S.settings.budgets.total;
   if (tb > 0) {
     const left = tb - exp;
-    const el = $("#sLeft"); el.textContent = money(left, 1); el.className = "v" + (left < 0 ? " neg" : left <= tb * 0.2 ? " low" : "");
+    const el = $("#sLeft"); el.textContent = money(left, 1); el.className = "v" + (left <= tb * 0.2 ? " neg" : left <= tb * 0.5 ? " half" : "");
     const now = new Date(); const isCur = now.getFullYear() === S.month.y && now.getMonth() === S.month.m;
     const daysLeft = isCur ? daysInMonth() - now.getDate() + 1 : 0;
     $("#sLeftD").textContent = left < 0 ? "лимит превышен" : isCur ? `≈ ${money(left / daysLeft, 1)} в день` : `из ${money(tb, 1)}`;
@@ -1038,22 +1125,26 @@ function renderHistory() {
   fc.innerHTML = `<option value="">Все категории</option>` + S.settings.categories.map(c => `<option value="${esc(c.id)}">${esc(c.emoji + " " + c.name)}</option>`).join("");
   fc.value = cur;
   const q = $("#q").value.trim().toLowerCase(), ft = $("#fType").value;
-  let arr = monthTx();
+  const mode = S.histMode || "month";
+  let arr = mode === "month" ? monthTx() : mode === "year" ? [...S.tx.values()].filter(t => t.date && t.date.startsWith(String(S.month.y))) : [...S.tx.values()];
+  renderYear(mode);
   if (ft) arr = arr.filter(t => t.type === ft);
   if (fc.value) arr = arr.filter(t => t.cat === fc.value);
   if (q) arr = arr.filter(t => (t.note || "").toLowerCase().includes(q) || catInfo(t.cat).name.toLowerCase().includes(q) || String(t.amount).includes(q));
-  const day = S.day && S.day.startsWith(ym()) ? S.day : null;
+  const day = mode === "month" && S.day && S.day.startsWith(ym()) ? S.day : null;
   $("#dayChipWrap").innerHTML = day ? `<button class="daychip" id="dayChip">${esc(fmtDate(day))}, ${WD[new Date(day + "T12:00").getDay()].toLowerCase()} <span aria-hidden="true">✕</span><span class="sr">Показать весь месяц</span></button>` : "";
   if (day) arr = arr.filter(t => t.date === day);
   sortTx(arr);
-  if (!arr.length) { $("#list").innerHTML = `<div class="empty">${monthTx().length ? "Ничего не найдено" : "В этом месяце операций нет"}</div>`; return; }
+  if (!arr.length) { $("#list").innerHTML = `<div class="empty">${q || ft || fc.value ? "Ничего не найдено" : mode === "month" ? "В этом месяце операций нет" : mode === "year" ? "В этом году операций нет" : "Операций пока нет"}</div>`; return; }
+  const LIMIT = 300; const more = arr.length > LIMIT; if (more) arr = arr.slice(0, LIMIT);
   const groups = {};
   arr.forEach(t => (groups[t.date] = groups[t.date] || []).push(t));
   $("#list").innerHTML = Object.entries(groups).map(([d, list]) => {
     const net = list.reduce((s, t) => s + (t.type === "inc" ? t.amount : -t.amount), 0);
     const wd = WD[new Date(d + "T12:00").getDay()];
-    return `<div class="daygrp"><div class="dayhd"><span>${esc(fmtDate(d))}, ${wd}</span><span class="net">${net > 0 ? "+" : net < 0 ? "−" : ""}${esc(money(Math.abs(net)))}</span></div>${list.map(txRow).join("")}</div>`;
-  }).join("");
+    const yr = mode !== "month" && d.slice(0, 4) !== String(new Date().getFullYear()) ? " " + d.slice(0, 4) : "";
+    return `<div class="daygrp"><div class="dayhd"><span>${esc(fmtDate(d))}${yr}, ${wd}</span><span class="net">${net > 0 ? "+" : net < 0 ? "−" : ""}${esc(money(Math.abs(net)))}</span></div>${list.map(txRow).join("")}</div>`;
+  }).join("") + (more ? `<div class="empty">Показаны последние ${LIMIT} операций — уточните поиск или фильтры</div>` : "");
 }
 
 function statusOf(spent, limit) {
@@ -1102,6 +1193,7 @@ function renderGoals() {
 
 function renderSettings() {
   $("#setCur").value = S.settings.currency;
+  renderLockSetting();
   renderAccount();
   renderPalettes();
   const block = type => S.settings.categories.filter(c => c.type === type).map(c =>
@@ -1153,6 +1245,41 @@ $("#themeBtn").onclick = () => {
   setTimeout(() => document.documentElement.classList.remove("theming"), 450);
   if (typeof haptic === "function") haptic("light");
 };
+
+// ---------- comparison with the previous month ----------
+const addMonths = (ymStr, n) => { const [y, m] = ymStr.split("-").map(Number); const d = new Date(y, m - 1 + n, 1); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}`; };
+const MONTHS_P = ["январе","феврале","марте","апреле","мае","июне","июле","августе","сентябре","октябре","ноябре","декабре"];
+function renderCompare() {
+  const cur = ym(), prev = addMonths(cur, -1);
+  const isCur = cur === todayISO().slice(0, 7);
+  const upto = isCur ? new Date().getDate() : 31;                    // same part of the month, for a fair comparison
+  const sum = (m) => { const by = {}; let t = 0; S.tx.forEach(x => { if (x.type !== "exp" || !x.date || !x.date.startsWith(m) || +x.date.slice(8) > upto) return; t += x.amount; by[x.cat] = (by[x.cat] || 0) + x.amount; }); return { t, by }; };
+  const a = sum(cur), b = sum(prev);
+  const card = $("#cmpCard");
+  if (!b.t) { card.classList.add("hidden"); return; }
+  card.classList.remove("hidden");
+  const pm = MONTHS_P[+prev.slice(5) - 1];
+  $("#cmpSub").textContent = isCur ? `за 1–${upto} число` : "";
+  const d = a.t - b.t, pc = Math.round(Math.abs(d) / b.t * 100);
+  const pct = (x, base) => base ? ` ${x > 0 ? "▲" : "▼"}${Math.round(Math.abs(x) / base * 100)}%` : "";
+  const rows = [...new Set([...Object.keys(a.by), ...Object.keys(b.by)])]
+    .map(k => ({ k, d: (a.by[k] || 0) - (b.by[k] || 0), base: b.by[k] || 0 }))
+    .filter(x => Math.abs(x.d) >= 1).sort((x, y) => Math.abs(y.d) - Math.abs(x.d)).slice(0, 4);
+  const lines = rows.map(x => {
+    const c = catInfo(x.k), more = x.d > 0;
+    const text = x.base ? `на ${money(Math.abs(x.d), 1)} ${more ? "больше" : "меньше"}, чем в ${pm}` : `${money(x.d, 1)} — в ${pm} трат не было`;
+    return `<div class="cmpline"><span class="nm"><span class="sw" style="background:${catColor(x.k)}"></span><span>${esc(c.emoji)} ${esc(c.name)} — ${esc(text)}</span></span><span class="ch ${more ? "up" : "down"}">${x.base ? pct(x.d, x.base) : "▲ новое"}</span></div>`;
+  }).join("");
+  let tip;
+  if (d < 0) tip = `Вы тратите меньше обычного 👍 За этот же период в ${pm} было потрачено на ${money(-d, 1)} больше.`;
+  else if (d === 0) tip = `Траты на уровне прошлого месяца.`;
+  else { const top = rows.find(x => x.d > 0); tip = top ? `💡 Больше всего выросли траты на «${catInfo(top.k).name}». Если сократить их до уровня ${pm.replace(/е$/, "я")}, сэкономите ${money(top.d, 1)}.` : `Траты выросли на ${money(d, 1)}.`; }
+  if (d > 0 && rows[0] && rows[0].d > 0 && rows[0].base) tip = `💡 На «${catInfo(rows[0].k).name}» уходит на ${money(rows[0].d, 1)} больше, чем в ${pm} ▲${Math.round(rows[0].d / rows[0].base * 100)}%. Попробуйте задать лимит в «Бюджетах».`;
+  $("#cmp").innerHTML = `<div class="cmphead"><span class="big">${money(a.t, 1)}</span>
+      <span class="${d > 0 ? "up" : d < 0 ? "down" : ""}" style="font-weight:700">${d ? `${d > 0 ? "▲ +" : "▼ −"}${money(Math.abs(d), 1)} (${d > 0 ? "+" : "−"}${pc}%)` : "без изменений"}</span></div>
+    <div class="note" style="margin:0 0 4px">расходы сейчас · в ${pm} за тот же период было ${money(b.t, 1)}</div>
+    ${lines}<div class="insight">${esc(tip)}</div>`;
+}
 
 // ---------- donut ----------
 function plural(n, one, few, many) { const m10 = n % 10, m100 = n % 100; return m10 === 1 && m100 !== 11 ? one : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? few : many; }
@@ -1233,7 +1360,7 @@ function renderInvest() {
     const T = invType(x.type), p = (+x.value || 0) - (+x.invested || 0);
     return `<div class="inv"><div class="top">
       <div class="ic" style="box-shadow:inset 0 0 0 2px color-mix(in srgb, ${invColor(x.type)} 50%, transparent)">${T.emoji}</div>
-      <div class="mid"><div class="t1">${esc(x.name)}</div><div class="t2">${esc(T.name)} · вложено ${esc(money(x.invested, 1))}</div></div>
+      <div class="mid"><div class="t1">${esc(x.name)}</div><div class="t2">${x.ticker ? `${esc(x.ticker)} · ${esc(new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 8 }).format(x.qty))} шт.${x.price ? " × " + esc(money(x.price)) : ""}` : esc(T.name)} · вложено ${esc(money(x.invested, 1))}</div></div>
       <div class="rt"><div class="v">${esc(money(x.value, 1))}</div><div class="pl">${plHtml(p, x.invested)}</div></div></div>
       <div class="acts"><button class="btn sm pri" data-iop="buy" data-inv="${esc(x.id)}">Докупить</button>
       <button class="btn sm" data-iop="sell" data-inv="${esc(x.id)}">Продать</button>
@@ -1247,6 +1374,7 @@ function openInv(x) {
   invEdit = x || null; invTypeSel = x ? x.type : "stocks";
   $("#invTitle").textContent = x ? "Актив" : "Новый актив";
   $("#invName").value = x ? x.name : ""; $("#invIn").value = x ? x.invested : ""; $("#invNow").value = x ? x.value : "";
+  $("#invTicker").value = x ? x.ticker || "" : ""; $("#invQty").value = x && x.qty ? String(x.qty).replace(".", ",") : "";
   $("#invDel").classList.toggle("hidden", !x); $("#invErr").textContent = "";
   paintInvTypes(); open("#invOv"); setTimeout(() => $("#invName").focus(), 50);
 }
@@ -1259,10 +1387,13 @@ $("#invForm").onsubmit = e => {
   if (!name) { $("#invErr").textContent = "Назовите актив"; return; }
   if (!(invested >= 0) || isNaN(invested)) { $("#invErr").textContent = "Укажите, сколько вложено"; return; }
   if (isNaN(now) || now < 0) { $("#invErr").textContent = "Проверьте текущую стоимость"; return; }
-  const x = { id: invEdit ? invEdit.id : uid(), name, type: invTypeSel, invested, value: now, updated: todayISO() };
+  const ticker = $("#invTicker").value.trim().toUpperCase().replace(/[^A-Z0-9._-]/g, ""), qty = $("#invQty").value.trim() ? (n => isFinite(n) ? Math.round(n * 1e8) / 1e8 : NaN)(parseFloat($("#invQty").value.replace(/\s/g, "").replace(",", "."))) : 0;
+  if (ticker && !(qty > 0)) { $("#invErr").textContent = "Для автоцены укажите количество"; return; }
+  const x = { id: invEdit ? invEdit.id : uid(), name, type: invTypeSel, invested, value: now, updated: todayISO(), ticker, qty: ticker ? qty : 0 };
   const A = S.settings.investments, i = A.findIndex(y => y.id === x.id);
   if (i >= 0) A[i] = x; else A.push(x);
   store.putSettings(); close($("#invOv")); toast("Актив сохранён");
+  if (ticker) refreshPrices(false);
 };
 let invDelArm = 0;
 $("#invDel").onclick = () => {
@@ -1589,6 +1720,146 @@ $("#copyCsv").onclick = async () => {
   catch (e) { const ta = $("#csvBox"); ta.value = buildCsv(); ta.classList.remove("hidden"); ta.focus(); ta.select(); toast("Выделите текст и скопируйте"); }
 };
 
+// ---------- history period & year chart ----------
+$("#fPeriod").onclick = e => {
+  const b = e.target.closest("button"); if (!b) return;
+  S.histMode = b.dataset.v; S.day = null;
+  $$("#fPeriod button").forEach(x => x.classList.toggle("on", x === b));
+  renderHistory();
+};
+function renderYear(mode) {
+  const card = $("#yearCard");
+  if (mode !== "year") { card.classList.add("hidden"); return; }
+  card.classList.remove("hidden");
+  const y = S.month.y; $("#yearTitle").textContent = `${y} год`;
+  $("#yearNav").innerHTML = `<button class="btn sm" data-yr="-1">‹ ${y - 1}</button> <button class="btn sm" data-yr="1">${y + 1} ›</button>`;
+  const inc = Array(12).fill(0), exp = Array(12).fill(0);
+  S.tx.forEach(t => { if (!t.date || !t.date.startsWith(String(y))) return; const m = +t.date.slice(5, 7) - 1; if (t.type === "inc") inc[m] += t.amount; else if (t.type === "exp") exp[m] += t.amount; });
+  const ti = inc.reduce((a, b) => a + b, 0), te = exp.reduce((a, b) => a + b, 0);
+  $("#yearSum").innerHTML = `<div><small>Доходы</small><b class="pos">${money(ti, 1)}</b></div><div><small>Расходы</small><b class="neg">${money(te, 1)}</b></div><div><small>Отложено</small><b>${ti - te < 0 ? "−" : ""}${money(Math.abs(ti - te), 1)}</b></div>`;
+  const box = $("#yearChart");
+  const max = Math.max(...inc, ...exp, 0);
+  if (!max) { box.innerHTML = `<div class="empty">В этом году операций нет</div>`; return; }
+  const W = Math.max(300, Math.round(box.clientWidth || 800)), H = 190, pl = 40, pb = 22, pt = 8, pr = 4;
+  const nice = niceMax(max), iw = W - pl - pr, ih = H - pt - pb, gw = iw / 12, bw = Math.max(3, Math.min(16, gw * .32));
+  let g = "";
+  for (let i = 0; i <= 3; i++) { const v = nice / 3 * i, yy = pt + ih - v / nice * ih; g += `<line x1="${pl}" x2="${W - pr}" y1="${yy}" y2="${yy}" stroke="var(--line)"/><text x="${pl - 8}" y="${yy + 4}" text-anchor="end" font-size="11" fill="var(--muted)">${shortNum(v)}</text>`; }
+  const MS = ["Я","Ф","М","А","М","И","И","А","С","О","Н","Д"];
+  const bar = (x, v, col, i) => { if (!v) return ""; const h = Math.max(2, v / nice * ih), yy = pt + ih - h, r = Math.min(4, bw / 2, h); return `<path class="ybar" data-m="${i}" d="M${x},${pt + ih} V${yy + r} Q${x},${yy} ${x + r},${yy} H${x + bw - r} Q${x + bw},${yy} ${x + bw},${yy + r} V${pt + ih} Z" fill="${col}"/>`; };
+  for (let i = 0; i < 12; i++) {
+    const cx = pl + gw * i + gw / 2;
+    g += bar(cx - bw - 1, inc[i], "var(--inc)", i) + bar(cx + 1, exp[i], "var(--exp)", i);
+    g += `<text x="${cx}" y="${H - 5}" text-anchor="middle" font-size="11" fill="${i === S.month.m ? "var(--text)" : "var(--muted)"}" font-weight="${i === S.month.m ? 700 : 400}">${MS[i]}</text>`;
+    g += `<rect class="yhit" data-m="${i}" x="${pl + gw * i}" y="${pt}" width="${gw}" height="${ih + pb}" fill="transparent"/>`;
+  }
+  box.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Доходы и расходы по месяцам">${g}</svg><div class="tip"></div>`;
+  const svg = box.querySelector("svg"), tip = box.querySelector(".tip");
+  svg.querySelectorAll(".yhit").forEach(h => {
+    const i = +h.dataset.m;
+    const show = () => {
+      tip.innerHTML = `${MONTHS[i]}: <span style="color:var(--inc)">+${esc(money(inc[i], 1))}</span> · <span style="color:var(--exp)">−${esc(money(exp[i], 1))}</span>`;
+      const rect = svg.getBoundingClientRect(), sc = rect.width / W;
+      tip.style.left = Math.min(Math.max((pl + gw * i + gw / 2) * sc, 110), rect.width - 110) + "px"; tip.style.top = (pt + ih - Math.max(inc[i], exp[i]) / nice * ih) * sc - 6 + "px"; tip.classList.add("show");
+      svg.querySelectorAll(".ybar").forEach(b => b.classList.toggle("dim", +b.dataset.m !== i));
+    };
+    h.addEventListener("mouseenter", show);
+    h.addEventListener("click", () => { show(); S.month = { y, m: i }; });
+  });
+  svg.addEventListener("mouseleave", () => { tip.classList.remove("show"); svg.querySelectorAll(".ybar").forEach(b => b.classList.remove("dim")); });
+}
+document.addEventListener("click", e => { const b = e.target.closest("[data-yr]"); if (b) { S.month = { y: S.month.y + +b.dataset.yr, m: S.month.m }; render(); } });
+
+// ---------- lock (PIN + biometrics through Telegram) ----------
+const sha = async s => [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)))].map(b => b.toString(16).padStart(2, "0")).join("");
+const pinHash = pin => sha("msf-pin:" + (tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : "web") + ":" + pin);
+const BM = () => tg && tg.BiometricManager && tg.isVersionAtLeast && tg.isVersionAtLeast("7.2") ? tg.BiometricManager : null;
+let bmReady = null;
+const bmInit = () => bmReady || (bmReady = new Promise(res => { const b = BM(); if (!b) return res(null); try { b.init(() => res(b)); } catch (e) { res(null); } setTimeout(() => res(b && b.isInited ? b : null), 1500); }));
+function padHtml(extra) { return [1,2,3,4,5,6,7,8,9].map(n => `<button type="button" data-k="${n}">${n}</button>`).join("") + `<button type="button" class="ghost" data-k="extra">${extra || ""}</button><button type="button" data-k="0">0</button><button type="button" class="ghost" data-k="del">⌫</button>`; }
+let lockBuf = "", locked = false, hiddenAt = 0;
+function lockNow() {
+  if (!S.settings.lock.on || locked) return;
+  locked = true; lockBuf = ""; paintLockDots();
+  $("#lockIco").innerHTML = $(".brand .dot").innerHTML;
+  $("#lockMsg").textContent = "";
+  $("#lock").classList.add("open"); document.body.classList.add("locked");
+  bmInit().then(b => {
+    $("#lockPad").innerHTML = padHtml(b && b.isBiometricAvailable ? (b.biometricType === "face" ? "Face ID" : "Отпечаток") : "Забыли?");
+    if (b && b.isBiometricAvailable) bioUnlock();
+  });
+}
+function unlock() { locked = false; $("#lock").classList.remove("open"); document.body.classList.remove("locked"); haptic("success"); }
+function paintLockDots() { $$("#lockDots i").forEach((i, n) => i.classList.toggle("f", n < lockBuf.length)); }
+async function bioUnlock() {
+  const b = await bmInit(); if (!b || !b.isBiometricAvailable) return;
+  const go = () => b.authenticate({ reason: "Разблокировать «Мои финансы»" }, ok => { if (ok) unlock(); });
+  if (b.isAccessGranted) go();
+  else b.requestAccess({ reason: "Входить в «Мои финансы» по биометрии" }, granted => { if (granted) go(); });
+}
+$("#lockPad").onclick = async e => {
+  const k = e.target.closest("[data-k]"); if (!k) return; const v = k.dataset.k;
+  if (v === "del") lockBuf = lockBuf.slice(0, -1);
+  else if (v === "extra") {
+    const b = await bmInit();
+    if (b && b.isBiometricAvailable) { bioUnlock(); return; }
+    $("#lockMsg").innerHTML = `PIN хранится только у вас. <a href="#" id="lockReset" style="color:var(--text)">Сбросить блокировку</a> — данные останутся.`; return;
+  } else if (lockBuf.length < 4) lockBuf += v;
+  paintLockDots(); haptic("light");
+  if (lockBuf.length === 4) {
+    if (await pinHash(lockBuf) === S.settings.lock.pin) unlock();
+    else { $("#lockDots").classList.remove("shake"); void $("#lockDots").offsetWidth; $("#lockDots").classList.add("shake"); haptic("error"); $("#lockMsg").textContent = "Неверный PIN"; lockBuf = ""; setTimeout(paintLockDots, 300); }
+  }
+};
+document.addEventListener("click", e => { if (e.target.id === "lockReset") { e.preventDefault(); S.settings.lock = { on: false, pin: "" }; store.putSettings(); unlock(); toast("Блокировка выключена"); } });
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden") hiddenAt = Date.now();
+  else if (S.settings.lock.on && hiddenAt && Date.now() - hiddenAt > 120000) lockNow();
+});
+// PIN setup
+let pinStep = 0, pinFirst = "", pinBuf = "";
+function paintPin() { $("#pinDots").innerHTML = [0,1,2,3].map(i => `<i style="width:14px;height:14px;border-radius:50%;border:2px solid var(--muted);${i < pinBuf.length ? "background:var(--text);border-color:var(--text)" : ""}"></i>`).join(""); }
+$("#lockOn").onchange = e => {
+  if (e.target.checked) { e.target.checked = false; pinStep = 0; pinBuf = ""; $("#pinTitle").textContent = "Придумайте PIN-код"; $("#pinMsg").textContent = "4 цифры"; $("#pinPad").innerHTML = padHtml(""); paintPin(); open("#pinOv"); }
+  else { S.settings.lock = { on: false, pin: "" }; store.putSettings(); toast("Блокировка выключена"); }
+};
+$("#pinPad").onclick = async e => {
+  const k = e.target.closest("[data-k]"); if (!k) return; const v = k.dataset.k;
+  if (v === "del") pinBuf = pinBuf.slice(0, -1); else if (v !== "extra" && pinBuf.length < 4) pinBuf += v;
+  paintPin(); if (pinBuf.length < 4) return;
+  if (pinStep === 0) { pinFirst = pinBuf; pinBuf = ""; pinStep = 1; $("#pinTitle").textContent = "Повторите PIN-код"; setTimeout(paintPin, 150); return; }
+  if (pinBuf !== pinFirst) { pinBuf = ""; pinStep = 0; $("#pinTitle").textContent = "Не совпало — ещё раз"; haptic("error"); setTimeout(paintPin, 150); return; }
+  S.settings.lock = { on: true, pin: await pinHash(pinBuf) }; store.putSettings(); close($("#pinOv"));
+  const b = await bmInit();
+  if (b && b.isBiometricAvailable && !b.isAccessGranted) b.requestAccess({ reason: "Входить в «Мои финансы» по биометрии" }, () => {});
+  toast(b && b.isBiometricAvailable ? "Блокировка включена — PIN и биометрия" : "Блокировка включена"); renderSettings();
+};
+
+// ---------- investments: automatic prices ----------
+const PRICE_API = "https://msp.zafi-offical.workers.dev/api/price";
+let pricesAt = 0;
+async function refreshPrices(manual) {
+  const list = S.settings.investments.filter(x => x.ticker && +x.qty > 0);
+  if (!list.length) { if (manual) toast("Укажите у активов тикер и количество"); return; }
+  if (manual) toast("Обновляю цены…");
+  let ok = 0, fail = [];
+  await Promise.all(list.map(async x => {
+    try {
+      const r = await fetch(`${PRICE_API}?src=${x.type === "crypto" ? "crypto" : "moex"}&t=${encodeURIComponent(x.ticker)}&cur=${encodeURIComponent(CUR_CODE[S.settings.currency] || "RUB")}`);
+      const d = await r.json(); if (!r.ok || !(d.price > 0)) throw 0;
+      x.price = d.price; x.value = Math.round(d.price * x.qty * 100) / 100; x.updated = todayISO(); ok++;
+    } catch (e) { fail.push(x.ticker); }
+  }));
+  pricesAt = Date.now();
+  if (ok) store.putSettings();
+  if (manual || fail.length) toast(fail.length ? `Не нашлись: ${fail.join(", ")}` : `Цены обновлены (${ok})`);
+}
+$("#invRefresh").onclick = () => refreshPrices(true);
+
+// ---------- lock setting in the settings window ----------
+function renderLockSetting() {
+  $("#lockOn").checked = !!S.settings.lock.on;
+  bmInit().then(bm => { $("#lockSub").textContent = bm && bm.isBiometricAvailable ? `PIN-код и ${bm.biometricType === "face" ? "Face ID" : "отпечаток пальца"}` : "4-значный PIN-код"; });
+}
 // ---------- start ----------
 $("#tab-overview").classList.add("enter");
 // ---------- entries made in the bot chat ----------
@@ -1632,7 +1903,13 @@ async function pullBot() {
 }
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") pullBot(); });
 
-initStorage().then(pullBot);
+const booted = initStorage();
+lockNow();                       // settings are read synchronously from this device first
+booted.then(() => {
+  lockNow();
+  pullBot();
+  if (S.settings.investments.some(x => x.ticker && +x.qty > 0)) refreshPrices(false);
+});
 })();
 </script>
 </body>
