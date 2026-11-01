@@ -261,6 +261,7 @@ nav.tabs button.on::after{content:"";position:absolute;left:0;right:0;bottom:-1p
 .pos,.inv .pl .pos{color:var(--inc)} .neg{color:var(--exp)}
 .amt,.stat .v,.inv .v,.goal .gv,.tx .sum,.donut .cv{font-feature-settings:"tnum" 1}
 .minus{color:#ff9a3c}
+.v.low{color:var(--warn)}
 .dayhd .net{color:var(--text)}
 .palpick{display:grid;gap:8px}
 .palopt{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--surface-2);border:1px solid transparent;border-radius:12px;padding:11px 12px;font-weight:600;font-size:14px;text-align:left}
@@ -323,6 +324,23 @@ nav.tabs .ind{position:absolute;left:0;bottom:-1px;height:2px;width:0;background
 .chart .bar.hot{opacity:1}
 html,body,*{scrollbar-width:none;-ms-overflow-style:none}
 ::-webkit-scrollbar{width:0!important;height:0!important;display:none}
+.login{position:fixed;inset:0;z-index:90;background:#000;display:none;align-items:center;justify-content:center;padding:24px}
+.login.open{display:flex;animation:ovIn .3s ease both}
+.login .lbox{max-width:360px;text-align:center;animation:fadeUp .5s .05s cubic-bezier(.2,.8,.2,1) both}
+.login .lico{width:64px;height:64px;border-radius:18px;background:#fff;display:grid;place-items:center;margin:0 auto 18px}
+.login h1{font-size:26px;margin:0 0 10px;letter-spacing:-.02em}
+.login p{color:var(--text-2);font-size:15px;line-height:1.5;margin:0 0 24px}
+.login .slot{min-height:46px;display:flex;justify-content:center}
+.login .lmsg{color:var(--muted);font-size:13px;margin-top:12px;min-height:18px}
+.login .lbot{color:var(--muted);font-size:13px;margin-top:6px}
+.login .lbot a{color:#fff}
+body.locked .wrap,body.locked .fab{visibility:hidden}
+.acc{display:flex;align-items:center;gap:12px;background:var(--surface-2);border-radius:12px;padding:10px 12px;margin-bottom:6px}
+.acc .ava{width:38px;height:38px;border-radius:50%;background:#fff;color:#000;display:grid;place-items:center;font-weight:800;overflow:hidden;flex:none}
+.acc .ava img{width:100%;height:100%;object-fit:cover}
+.acc .who{flex:1;min-width:0}
+.acc .who b{display:block;font-size:14px}
+.acc .who small{color:var(--muted);font-size:12px}
 </style>
 </head>
 <body>
@@ -357,8 +375,8 @@ html,body,*{scrollbar-width:none;-ms-overflow-style:none}
 
   <section id="tab-overview">
     <div class="stats">
-      <div class="stat"><div class="l">Расходы</div><div class="v" id="sExp">—</div><div class="d" id="sExpD"></div></div>
       <div class="stat"><div class="l">Доходы</div><div class="v" id="sInc">—</div><div class="d" id="sIncD"></div></div>
+      <div class="stat"><div class="l">Расходы</div><div class="v" id="sExp">—</div><div class="d" id="sExpD"></div></div>
       <div class="stat"><div class="l">Баланс месяца</div><div class="v" id="sBal">—</div><div class="d" id="sBalD"></div></div>
       <div class="stat"><div class="l">Осталось по бюджету</div><div class="v" id="sLeft">—</div><div class="d" id="sLeftD"></div></div>
     </div>
@@ -562,6 +580,7 @@ html,body,*{scrollbar-width:none;-ms-overflow-style:none}
 
 <div class="toast" id="toast"></div>
 
+
 <script>
 (() => {
 "use strict";
@@ -673,7 +692,7 @@ const blobFor = prefix => prefix === "s" ? JSON.stringify(S.settings) : packMont
 
 const store = {
   mode: CS ? "cloud" : "local",
-  known: new Map(),   // prefix -> number of parts currently in the cloud
+  known: new Map(),
   dirty: new Set(),
   running: false, timer: null,
   loadLocal() {
@@ -723,7 +742,7 @@ const store = {
     const parts = [];
     for (let i = 0; i < str.length; i += CHUNK) parts.push(str.slice(i, i + CHUNK));
     for (let i = parts.length - 1; i >= 1; i--) await csCall("setItem", `${prefix}_${i}`, parts[i]);
-    await csCall("setItem", `${prefix}_0`, parts.length + "|" + parts[0]);   // header last = commit
+    await csCall("setItem", `${prefix}_0`, parts.length + "|" + parts[0]);
     if (old > parts.length) await csCall("removeItems", range(parts.length, old));
     this.known.set(prefix, parts.length);
   },
@@ -778,6 +797,7 @@ function normSettings(s) {
   };
 }
 
+
 async function initStorage() {
   store.loadLocal();
   render();
@@ -791,14 +811,12 @@ async function initStorage() {
   setStatus("Синхронизация…");
   try {
     const c = await store.loadCloud();
-    // cloud is the source of truth, except for parts changed here that never reached it
     const pendingMonths = new Set([...store.dirty].filter(p => p !== "s"));
     const tx = new Map();
     [...S.tx.values()].forEach(t => { if (pendingMonths.has(monthKey(t.date))) tx.set(t.id, t); });
     Object.entries(c.months).forEach(([mk, list]) => { if (!pendingMonths.has(mk)) list.forEach(t => tx.set(t.id, t)); });
     const cloudEmpty = !c.settings && !Object.keys(c.months).length;
     if (cloudEmpty && (S.tx.size || localStorage.getItem(LS_KEY))) {
-      // first run with local data: upload everything
       new Set([...S.tx.values()].map(t => monthKey(t.date))).forEach(p => store.dirty.add(p));
       store.dirty.add("s");
     } else {
@@ -814,7 +832,10 @@ async function initStorage() {
     setTimeout(() => store.flush(), 15000);
   }
 }
+function renderAccount() {}
 function setStatus(t) { $("#status").textContent = t; }
+
+
 
 // ---------- derived ----------
 const catById = id => S.settings.categories.find(c => c.id === id);
@@ -854,12 +875,12 @@ function renderOverview() {
   $("#sExpD").textContent = (n => `${n} ${plural(n, "операция", "операции", "операций")}`)(tx.filter(t => t.type === "exp").length);
   setNum("#sInc", money(inc, 1), "v" + (inc ? " pos" : ""));
   $("#sIncD").textContent = (n => `${n} ${plural(n, "операция", "операции", "операций")}`)(tx.filter(t => t.type === "inc").length);
-  setNum("#sBal", (bal > 0 ? "+" : "") + money(bal, 1), "v" + (bal < 0 ? " minus" : ""));
+  setNum("#sBal", (bal > 0 ? "+" : bal < 0 ? "−" : "") + money(Math.abs(bal), 1), "v");
   $("#sBalD").textContent = inc ? `сохранено ${Math.max(0, Math.round(bal / inc * 100))}% дохода` : "доходов пока нет";
   const tb = S.settings.budgets.total;
   if (tb > 0) {
     const left = tb - exp;
-    const el = $("#sLeft"); el.textContent = money(left, 1); el.className = "v " + (left >= 0 ? "" : "neg");
+    const el = $("#sLeft"); el.textContent = money(left, 1); el.className = "v" + (left < 0 ? " neg" : left <= tb * 0.2 ? " low" : "");
     const now = new Date(); const isCur = now.getFullYear() === S.month.y && now.getMonth() === S.month.m;
     const daysLeft = isCur ? daysInMonth() - now.getDate() + 1 : 0;
     $("#sLeftD").textContent = left < 0 ? "лимит превышен" : isCur ? `≈ ${money(left / daysLeft, 1)} в день` : `из ${money(tb, 1)}`;
@@ -982,7 +1003,7 @@ function renderHistory() {
   $("#list").innerHTML = Object.entries(groups).map(([d, list]) => {
     const net = list.reduce((s, t) => s + (t.type === "inc" ? t.amount : -t.amount), 0);
     const wd = WD[new Date(d + "T12:00").getDay()];
-    return `<div class="daygrp"><div class="dayhd"><span>${esc(fmtDate(d))}, ${wd}</span><span class="${net < 0 ? "minus" : "net"}">${net > 0 ? "+" : net < 0 ? "−" : ""}${esc(money(Math.abs(net)))}</span></div>${list.map(txRow).join("")}</div>`;
+    return `<div class="daygrp"><div class="dayhd"><span>${esc(fmtDate(d))}, ${wd}</span><span class="net">${net > 0 ? "+" : net < 0 ? "−" : ""}${esc(money(Math.abs(net)))}</span></div>${list.map(txRow).join("")}</div>`;
   }).join("");
 }
 
@@ -1006,7 +1027,7 @@ function renderBudgets() {
       <div class="meta"><span>Потрачено ${esc(money(spent))}${has ? ` из ${esc(money(limit))}` : ""}</span>
       ${has ? `<span>${spent <= limit ? "осталось " + esc(money(limit - spent)) : "сверх лимита " + esc(money(spent - limit))} <span class="badge ${st}">${stl}</span></span>` : ""}</div></div>`;
   };
-  $("#budgets").innerHTML = row("__total", "Всего за месяц", "var(--accent)", total, B.total) +
+  $("#budgets").innerHTML = row("__total", "Всего за месяц", "var(--exp)", total, B.total) +
     S.settings.categories.filter(c => c.type === "exp").map(c => row(c.id, `${esc(c.emoji)} ${esc(c.name)}`, catColor(c.id), by[c.id] || 0, +B.byCat[c.id] || 0)).join("");
 }
 
@@ -1025,13 +1046,14 @@ function renderGoals() {
     return `<div class="goal"><div class="gt"><span>${esc(g.emoji || "🎯")} ${esc(g.name)}</span><button class="iconbtn" data-editgoal="${esc(g.id)}" aria-label="Изменить">✎</button></div>
       <div class="gv">${esc(money(g.saved, 1))}</div>
       <div class="gs">из ${esc(money(g.target, 1))} · ${Math.round(p)}%${left === 0 ? " · 🎉 цель достигнута!" : ""}${esc(extra)}</div>
-      <div class="track"><div class="fill" style="width:${Math.max(p, g.saved ? 1.5 : 0)}%;background:${left === 0 ? "var(--good)" : "var(--accent)"}"></div></div>
+      <div class="track"><div class="fill" style="width:${Math.max(p, g.saved ? 1.5 : 0)}%;background:var(--inc)"></div></div>
       <div class="acts"><button class="btn sm pri" data-dep="${esc(g.id)}">Отложить</button><button class="btn sm" data-wd="${esc(g.id)}">Снять</button></div></div>`;
   }).join("");
 }
 
 function renderSettings() {
   $("#setCur").value = S.settings.currency;
+  renderAccount();
   renderPalettes();
   const block = type => S.settings.categories.filter(c => c.type === type).map(c =>
     `<div class="catedit"><span class="sw" style="background:${type === "exp" ? catColor(c.id) : "var(--inc)"}"></span>
