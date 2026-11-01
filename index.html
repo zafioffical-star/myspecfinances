@@ -6,7 +6,7 @@
 <title>Мои финансы</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   color-scheme: light;
@@ -50,7 +50,31 @@ header.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom
 .brand{font-weight:800;font-size:22px;letter-spacing:-.02em;margin-right:auto;display:flex;align-items:center;gap:10px}
 .brand .dot{width:28px;height:28px;border-radius:9px;background:var(--accent);display:grid;place-items:center;color:#fff;font-size:15px}
 .month{display:flex;align-items:center;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px}
-.month span{min-width:132px;text-align:center;font-weight:700;font-size:14px}
+.month{position:relative}
+#mLabel{min-width:132px;text-align:center;font-weight:700;font-size:14px;border:0;background:transparent;padding:6px 4px;border-radius:999px}
+#mLabel:hover{background:#262626}
+.cal{position:absolute;top:calc(100% + 8px);left:0;z-index:40;width:300px;max-width:calc(100vw - 28px);background:#1b1b1b;border:1px solid #2c2c2c;border-radius:16px;padding:14px 12px 10px;box-shadow:0 24px 60px rgba(0,0,0,.7);display:none}
+.cal.open{display:block}
+.cal .ch{display:flex;align-items:center;justify-content:space-between;padding:0 4px 10px}
+.cal .ch b{font-size:15px;font-weight:700}
+.cal .ch .nav{display:flex;gap:2px}
+.cal .ch .nav button{width:32px;height:32px;border:0;border-radius:999px;background:transparent;color:var(--muted);display:grid;place-items:center}
+.cal .ch .nav button:hover{background:#2a2a2a;color:#fff}
+.cal .grid{display:grid;grid-template-columns:repeat(7,1fr);row-gap:4px;text-align:center}
+.cal .wd{font-size:12px;font-weight:700;color:#fff;padding:6px 0 8px}
+.cal .d{position:relative;height:38px;width:38px;margin:0 auto;border:0;border-radius:999px;background:transparent;font-size:14px;font-weight:500;color:#fff;font-variant-numeric:tabular-nums}
+.cal .d:hover{background:#2c2c2c}
+.cal .d.out{color:#5f5f5f}
+.cal .d.today{background:#fff;color:#000;font-weight:700}
+.cal .d.sel{box-shadow:inset 0 0 0 2px #fff}
+.cal .d.today.sel{box-shadow:inset 0 0 0 2px #fff,0 0 0 2px #1b1b1b,0 0 0 4px #fff}
+.cal .d i{position:absolute;left:50%;bottom:4px;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--exp)}
+.cal .d i.inc{background:var(--inc)}
+.cal .d.today i{bottom:3px}
+.cal .cf{display:flex;justify-content:space-between;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid #2a2a2a}
+.cal .cf button{border:0;background:transparent;color:var(--text-2);font-weight:600;font-size:13px;padding:6px 8px;border-radius:8px}
+.cal .cf button:hover{background:#2a2a2a;color:#fff}
+.daychip{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#000;border:0;border-radius:999px;padding:7px 12px;font-weight:700;font-size:13px;margin:0 0 12px}
 .iconbtn{border:0;background:transparent;width:34px;height:34px;border-radius:999px;display:grid;place-items:center;font-size:16px;color:var(--text-2)}
 .iconbtn:hover{background:var(--surface-2)}
 .gear{background:var(--surface);border:1px solid var(--line)}
@@ -108,7 +132,10 @@ nav.tabs button.on{background:var(--surface);color:var(--text);box-shadow:var(--
 /* list */
 .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
 .filters input,.filters select{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:14px}
-.filters input{flex:1;min-width:160px}
+.filters{flex-wrap:nowrap}
+.filters input{flex:1 1 auto;min-width:0;width:0}
+.filters select{flex:0 1 auto;min-width:0;max-width:42%;padding-right:6px}
+@media (max-width:440px){.filters{gap:6px}.filters input,.filters select{font-size:13px;padding:9px 8px}}
 .daygrp{margin-bottom:6px}
 .dayhd{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;padding:12px 4px 6px}
 .tx{display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px;cursor:pointer}
@@ -180,18 +207,87 @@ nav.tabs button.on{background:var(--surface);color:var(--text);box-shadow:var(--
 .hidden{display:none!important}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 textarea.fld{min-height:120px;font-family:ui-monospace,monospace;font-size:12px}
+/* ===== Exchange-style dark skin ===== */
+:root:root:root{
+  color-scheme: dark;
+  --bg:#000; --surface:#101010; --surface-2:#1b1b1b; --line:#232323;
+  --text:#fff; --text-2:#a8a8a8; --muted:#7a7a7a;
+  --accent:#fff; --accent-ink:#000;
+  --exp:#f0506e; --inc:#22c27b;
+  --good:#22c27b; --warn:#f0b90b; --crit:#f0506e;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#008300; --s7:#9085e9; --s8:#e66767; --s0:#4d5568;
+  --shadow:none; --r:14px;
+}
+html,body{font-family:Inter,Manrope,system-ui,-apple-system,"Segoe UI",sans-serif;background:#000}
+.brand{font-size:20px;letter-spacing:-.01em}
+.brand .dot{background:#fff;color:#000;border-radius:7px;width:26px;height:26px;font-weight:800}
+.month{background:var(--surface-2);border:0}
+.gear{background:var(--surface-2);border:0;color:#fff;width:40px;height:40px}
+.gear:hover{background:#262626}
+nav.tabs{background:transparent;padding:0;border-radius:0;border-bottom:1px solid var(--line);gap:18px;margin-bottom:18px}
+nav.tabs button{flex:0 0 auto;padding:10px 0 12px;border-radius:0;color:var(--muted);font-size:15px;font-weight:600;position:relative;background:transparent!important;box-shadow:none!important}
+nav.tabs button.on{color:#fff}
+nav.tabs button.on::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:#fff;border-radius:2px}
+@media (max-width:440px){nav.tabs{gap:14px}nav.tabs button{padding:10px 0 12px;font-size:14px}}
+.card,.stat,.goal,.inv{background:var(--surface);border:1px solid var(--line);box-shadow:none}
+.stat .l{color:var(--muted);font-weight:500}
+.stat .v{font-size:22px;font-weight:700;letter-spacing:-.01em}
+.card h3{font-weight:600}
+.btn{background:var(--surface-2);border:0;border-radius:999px;font-weight:600}
+.btn:hover{background:#262626}
+.btn.pri{background:#fff;color:#000}
+.btn.pri:hover{filter:none;background:#e6e6e6}
+.btn.danger{color:var(--crit)}
+.fab{background:#fff;color:#000;box-shadow:0 8px 28px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.08)}
+.modal{background:#121212;border:1px solid var(--line)}
+.ov{background:rgba(0,0,0,.7)}
+.fld,.limit,.filters input,.filters select{background:var(--surface-2);border:1px solid transparent;border-radius:10px}
+.fld:focus,.limit:focus,.filters input:focus,.filters select:focus{outline:1px solid #fff;outline-offset:-1px}
+.bigamt{border-bottom:1px solid var(--line)}
+.bigamt:focus-within{border-color:#fff}
+.seg{background:var(--surface-2);border-radius:999px}
+.seg button{border-radius:999px;color:var(--muted)}
+.seg button.on{background:#fff;color:#000;box-shadow:none}
+.seg button.on.exp{background:var(--exp);color:#fff}
+.seg button.on.inc{background:var(--inc);color:#000}
+.chip{background:var(--surface-2);border:1px solid transparent}
+.chip.on{background:#fff;color:#000;border-color:#fff}
+.tx:hover,.catrow.hl{background:var(--surface-2)}
+.tx .ic,.inv .ic{background:var(--surface-2)}
+.track{background:var(--surface-2)}
+.tip{background:#fff;color:#000}
+.toast{background:#fff;color:#000}
+.status,.note{color:var(--muted)}
+.pos,.inv .pl .pos{color:var(--inc)} .neg{color:var(--exp)}
+.amt,.stat .v,.inv .v,.goal .gv,.tx .sum,.donut .cv{font-feature-settings:"tnum" 1}
+.minus{color:#ff9a3c}
+.dayhd .net{color:var(--text)}
+.palpick{display:grid;gap:8px}
+.palopt{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--surface-2);border:1px solid transparent;border-radius:12px;padding:11px 12px;font-weight:600;font-size:14px;text-align:left}
+.palopt.on{border-color:#fff}
+.palopt .sws{display:flex;gap:4px}
+.palopt .sws i{width:15px;height:15px;border-radius:4px;display:block}
+.palopt .nm small{display:block;font-weight:500;color:var(--muted);font-size:12px;margin-top:2px}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
-    <div class="brand"><div class="dot">₽</div>Мои финансы</div>
+    <div class="brand"><div class="dot"><svg viewBox="0 0 32 32" width="20" height="20" aria-hidden="true"><g fill="#000"><rect x="4" y="19" width="5" height="9" rx="1.5"/><rect x="11" y="14" width="5" height="14" rx="1.5"/><rect x="18" y="17" width="5" height="11" rx="1.5"/><rect x="25" y="9" width="5" height="19" rx="1.5" opacity=".55"/></g><path d="M4.5 13 L13.5 7 L20 10 L28.5 2.8" fill="none" stroke="#000" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M23.6 2.4 L29 2.3 L28.8 7.6" fill="none" stroke="#000" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Мои финансы</div>
     <div class="month">
       <button class="iconbtn" id="mPrev" aria-label="Предыдущий месяц">‹</button>
-      <span id="mLabel"></span>
+      <button id="mLabel" aria-haspopup="dialog" aria-expanded="false"></button>
+      <div class="cal" id="cal" role="dialog" aria-label="Календарь">
+        <div class="ch"><b id="calTitle"></b><div class="nav">
+          <button type="button" id="calPrev" aria-label="Предыдущий месяц"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 3 L11 9 H1z" fill="currentColor"/></svg></button>
+          <button type="button" id="calNext" aria-label="Следующий месяц"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 9 L11 3 H1z" fill="currentColor"/></svg></button>
+        </div></div>
+        <div class="grid" id="calGrid"></div>
+        <div class="cf"><button type="button" id="calToday">Сегодня</button><button type="button" id="calMonth">Весь месяц</button></div>
+      </div>
       <button class="iconbtn" id="mNext" aria-label="Следующий месяц">›</button>
     </div>
-    <button class="iconbtn gear" id="openSettings" aria-label="Настройки">⚙︎</button>
+    <button class="iconbtn gear" id="openSettings" aria-label="Настройки"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><g fill="currentColor"><rect x="10" y="1.2" width="4" height="5.2" rx="1.2" transform="rotate(0 12 12)"/><rect x="10" y="1.2" width="4" height="5.2" rx="1.2" transform="rotate(45 12 12)"/><rect x="10" y="1.2" width="4" height="5.2" rx="1.2" transform="rotate(90 12 12)"/><rect x="10" y="1.2" width="4" height="5.2" rx="1.2" transform="rotate(135 12 12)"/><rect x="10" y="1.2" width="4" height="5.2" rx="1.2" transform="rotate(180 12 12)"/><rect x="10" y="1.2" width="4" height="5.2" rx="1.2" transform="rotate(225 12 12)"/><rect x="10" y="1.2" width="4" height="5.2" rx="1.2" transform="rotate(270 12 12)"/><rect x="10" y="1.2" width="4" height="5.2" rx="1.2" transform="rotate(315 12 12)"/><path fill-rule="evenodd" d="M12 4.6a7.4 7.4 0 1 1 0 14.8a7.4 7.4 0 1 1 0-14.8zM12 8.9a3.1 3.1 0 1 0 0 6.2a3.1 3.1 0 1 0 0-6.2z"/></g></svg></button>
   </header>
 
   <nav class="tabs" role="tablist">
@@ -225,10 +321,11 @@ textarea.fld{min-height:120px;font-family:ui-monospace,monospace;font-size:12px}
 
   <section id="tab-history" class="hidden">
     <div class="filters">
-      <input id="q" type="search" placeholder="Поиск по заметкам и категориям">
+      <input id="q" type="search" placeholder="Поиск">
       <select id="fType"><option value="">Все</option><option value="exp">Расходы</option><option value="inc">Доходы</option></select>
       <select id="fCat"><option value="">Все категории</option></select>
     </div>
+    <div id="dayChipWrap"></div>
     <div class="card" style="padding:8px 8px 4px"><div id="list"></div></div>
   </section>
 
@@ -388,6 +485,8 @@ textarea.fld{min-height:120px;font-family:ui-monospace,monospace;font-size:12px}
       <option value="€">€ — евро</option><option value="₸">₸ — тенге</option><option value="¥">¥ — юань</option><option value="JP¥">JP¥ — иена</option>
     </select>
     <div class="note">При смене валюты все суммы можно пересчитать по курсу ЦБ РФ.</div>
+    <label class="lbl">Цвета категорий</label>
+    <div class="palpick" id="palPick"></div>
     <label class="lbl">Категории расходов</label>
     <div id="catsExp"></div>
     <button class="btn sm" data-addcat="exp">+ Категория расходов</button>
@@ -453,6 +552,8 @@ const DEFAULT_SETTINGS = () => ({
   budgets: { total: 0, byCat: {} },
   goals: [],
   investments: [],
+  palette: "brand",
+  v3: true,
 });
 
 // ---------- state ----------
@@ -469,8 +570,8 @@ const haptic = (kind) => { try { if (!tg || !tg.HapticFeedback) return; if (kind
 function applyTheme() {
   if (!tg) return;
   const p = tg.themeParams || {}, r = document.documentElement.style;
-  document.documentElement.dataset.theme = tg.colorScheme === "dark" ? "dark" : "light";
-  const set = (v, val) => { if (val) r.setProperty(v, val); };
+  document.documentElement.dataset.theme = "dark";
+  const set = () => {};   // fixed exchange-style dark skin: ignore Telegram colors
   set("--bg", p.secondary_bg_color || p.bg_color);
   set("--surface", p.section_bg_color || p.bg_color);
   set("--text", p.text_color);
@@ -478,7 +579,7 @@ function applyTheme() {
   set("--text-2", p.subtitle_text_color || p.hint_color);
   set("--accent", p.button_color);
   set("--accent-ink", p.button_text_color);
-  try { tg.setHeaderColor(p.secondary_bg_color ? "secondary_bg_color" : "bg_color"); tg.setBackgroundColor(p.secondary_bg_color ? "secondary_bg_color" : "bg_color"); } catch (e) {}
+  try { tg.setHeaderColor("#000000"); tg.setBackgroundColor("#000000"); if (tg.setBottomBarColor) tg.setBottomBarColor("#000000"); } catch (e) {}
 }
 if (tg) {
   try { tg.ready(); tg.expand(); } catch (e) {}
@@ -615,6 +716,8 @@ function normSettings(s) {
     budgets: { total: +(s.budgets && s.budgets.total) || 0, byCat: { ...((s.budgets && s.budgets.byCat) || {}) } },
     goals: Array.isArray(s.goals) ? s.goals.map(g => ({ ...g })) : [],
     investments: Array.isArray(s.investments) ? s.investments.map(x => ({ ...x })) : [],
+    palette: !s.v3 ? "brand" : (s.palette || "brand"),
+    v3: true,
   };
 }
 
@@ -673,7 +776,7 @@ const sortTx = arr => arr.sort((a, b) => (b.date || "").localeCompare(a.date || 
 function render() {
   $("#mLabel").textContent = `${MONTHS[S.month.m]} ${S.month.y}`;
   $$(".cur").forEach(e => e.textContent = S.settings.currency);
-  $(".brand .dot").textContent = S.settings.currency;
+  applyPalette();
   renderOverview(); renderHistory(); renderBudgets(); renderGoals(); renderInvest();
   if ($("#setOv").classList.contains("open")) renderSettings();
 }
@@ -683,11 +786,11 @@ function renderOverview() {
   const exp = tx.filter(t => t.type === "exp").reduce((s, t) => s + t.amount, 0);
   const inc = tx.filter(t => t.type === "inc").reduce((s, t) => s + t.amount, 0);
   const bal = inc - exp;
-  $("#sExp").textContent = money(exp, 1);
-  $("#sExpD").textContent = `${tx.filter(t => t.type === "exp").length} операций`;
-  $("#sInc").textContent = money(inc, 1);
-  $("#sIncD").textContent = `${tx.filter(t => t.type === "inc").length} операций`;
-  const sb = $("#sBal"); sb.textContent = (bal > 0 ? "+" : "") + money(bal, 1); sb.className = "v " + (bal >= 0 ? "pos" : "neg");
+  $("#sExp").textContent = money(exp, 1); $("#sExp").className = "v" + (exp ? " neg" : "");
+  $("#sExpD").textContent = (n => `${n} ${plural(n, "операция", "операции", "операций")}`)(tx.filter(t => t.type === "exp").length);
+  $("#sInc").textContent = money(inc, 1); $("#sInc").className = "v" + (inc ? " pos" : "");
+  $("#sIncD").textContent = (n => `${n} ${plural(n, "операция", "операции", "операций")}`)(tx.filter(t => t.type === "inc").length);
+  const sb = $("#sBal"); sb.textContent = (bal > 0 ? "+" : "") + money(bal, 1); sb.className = "v" + (bal < 0 ? " minus" : "");
   $("#sBalD").textContent = inc ? `сохранено ${Math.max(0, Math.round(bal / inc * 100))}% дохода` : "доходов пока нет";
   const tb = S.settings.budgets.total;
   if (tb > 0) {
@@ -790,7 +893,7 @@ function txRow(t) {
   return `<div class="tx" data-tx="${esc(t.id)}">
     <div class="ic" style="${t.type === "exp" ? `box-shadow:inset 0 0 0 2px color-mix(in srgb, ${catColor(t.cat)} 45%, transparent)` : ""}">${esc(c.emoji)}</div>
     <div class="mid"><div class="t1">${esc(c.name)}</div><div class="t2">${sub}</div></div>
-    <div class="sum ${t.type === "inc" ? "pos" : ""}">${sign}${esc(money(t.amount))}</div></div>`;
+    <div class="sum ${t.type === "inc" ? "pos" : "neg"}">${sign}${esc(money(t.amount))}</div></div>`;
 }
 function fmtDate(iso) { if (!iso) return ""; const [y, m, d] = iso.split("-").map(Number); return `${d} ${MONTHS_G[m - 1]}`; }
 
@@ -803,6 +906,9 @@ function renderHistory() {
   if (ft) arr = arr.filter(t => t.type === ft);
   if (fc.value) arr = arr.filter(t => t.cat === fc.value);
   if (q) arr = arr.filter(t => (t.note || "").toLowerCase().includes(q) || catInfo(t.cat).name.toLowerCase().includes(q) || String(t.amount).includes(q));
+  const day = S.day && S.day.startsWith(ym()) ? S.day : null;
+  $("#dayChipWrap").innerHTML = day ? `<button class="daychip" id="dayChip">${esc(fmtDate(day))}, ${WD[new Date(day + "T12:00").getDay()].toLowerCase()} <span aria-hidden="true">✕</span><span class="sr">Показать весь месяц</span></button>` : "";
+  if (day) arr = arr.filter(t => t.date === day);
   sortTx(arr);
   if (!arr.length) { $("#list").innerHTML = `<div class="empty">${monthTx().length ? "Ничего не найдено" : "В этом месяце операций нет"}</div>`; return; }
   const groups = {};
@@ -810,7 +916,7 @@ function renderHistory() {
   $("#list").innerHTML = Object.entries(groups).map(([d, list]) => {
     const net = list.reduce((s, t) => s + (t.type === "inc" ? t.amount : -t.amount), 0);
     const wd = WD[new Date(d + "T12:00").getDay()];
-    return `<div class="daygrp"><div class="dayhd"><span>${esc(fmtDate(d))}, ${wd}</span><span>${net > 0 ? "+" : net < 0 ? "−" : ""}${esc(money(Math.abs(net)))}</span></div>${list.map(txRow).join("")}</div>`;
+    return `<div class="daygrp"><div class="dayhd"><span>${esc(fmtDate(d))}, ${wd}</span><span class="${net < 0 ? "minus" : "net"}">${net > 0 ? "+" : net < 0 ? "−" : ""}${esc(money(Math.abs(net)))}</span></div>${list.map(txRow).join("")}</div>`;
   }).join("");
 }
 
@@ -860,6 +966,7 @@ function renderGoals() {
 
 function renderSettings() {
   $("#setCur").value = S.settings.currency;
+  renderPalettes();
   const block = type => S.settings.categories.filter(c => c.type === type).map(c =>
     `<div class="catedit"><span class="sw" style="background:${type === "exp" ? catColor(c.id) : "var(--inc)"}"></span>
       <input class="fld e" data-ce="${esc(c.id)}" value="${esc(c.emoji)}" maxlength="4" aria-label="Иконка">
@@ -869,6 +976,31 @@ function renderSettings() {
 }
 
 let rsz; window.addEventListener("resize", () => { clearTimeout(rsz); rsz = setTimeout(renderOverview, 150); });
+// ---------- category palettes (each validated for the dark surface: lightness band, chroma, CVD & normal-vision separation, contrast) ----------
+const PALETTES = [
+  { id: "brand", name: "Фирменная", sub: "синий и зелёный, как на аватарке", c: ["#337ee3","#01ab70","#5299c8","#6741ca","#0ea3b0","#05893e","#a843be","#07957c"] },
+  { id: "std", name: "Стандарт", sub: "сбалансированная", c: ["#3987e5","#d95926","#199e70","#c98500","#d55181","#008300","#9085e9","#e66767"] },
+  { id: "neon", name: "Неон", sub: "яркая, как на бирже", c: ["#079db6","#6ba304","#8a4af5","#04a97a","#0278e7","#c38406","#e5259a","#e14f02"] },
+  { id: "ocean", name: "Океан", sub: "холодные оттенки", c: ["#2389e2","#03aa8e","#735cc7","#0fa9b0","#a95cbb","#50a33d","#0886b0","#ac9008"] },
+  { id: "warm", name: "Закат", sub: "тёплые оттенки", c: ["#c38406","#de1d3f","#8658e1","#d96604","#01a760","#b62eb0","#929208","#de297b"] },
+  { id: "soft", name: "Мягкая", sub: "приглушённая", c: ["#5497d9","#c26b4c","#059eb1","#ac942f","#b4608a","#57873a","#806ab9","#3aac83"] },
+];
+function applyPalette() {
+  const P = PALETTES.find(x => x.id === S.settings.palette) || PALETTES[0];
+  P.c.forEach((c, i) => document.documentElement.style.setProperty(`--s${i + 1}`, c));
+}
+function renderPalettes() {
+  const box = $("#palPick"); if (!box) return;
+  box.innerHTML = PALETTES.map(P => `<button type="button" class="palopt ${P.id === (S.settings.palette || "brand") ? "on" : ""}" data-pal="${P.id}">
+    <span class="nm">${P.name}<small>${P.sub}</small></span><span class="sws">${P.c.map(c => `<i style="background:${c}"></i>`).join("")}</span></button>`).join("");
+}
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-pal]"); if (!b) return;
+  if (S.settings.palette === b.dataset.pal) return;
+  S.settings.palette = b.dataset.pal; store.putSettings(); renderPalettes();
+  toast("Цвета: " + (PALETTES.find(x => x.id === b.dataset.pal) || {}).name);
+});
+
 // ---------- donut ----------
 function plural(n, one, few, many) { const m10 = n % 10, m100 = n % 100; return m10 === 1 && m100 !== 11 ? one : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? few : many; }
 function pctStr(f) { const p = f * 100; return (p > 0 && p < 1 ? "<1" : Math.round(p)) + "%"; }
@@ -1024,8 +1156,49 @@ function setTab(t) {
 }
 $$("nav.tabs button").forEach(b => b.onclick = () => setTab(b.dataset.tab));
 document.addEventListener("click", e => { const g = e.target.closest("[data-goto]"); if (g) { e.preventDefault(); setTab(g.dataset.goto); } });
-$("#mPrev").onclick = () => { S.month.m--; if (S.month.m < 0) { S.month.m = 11; S.month.y--; } render(); };
-$("#mNext").onclick = () => { S.month.m++; if (S.month.m > 11) { S.month.m = 0; S.month.y++; } render(); };
+$("#mPrev").onclick = () => { S.month.m--; if (S.month.m < 0) { S.month.m = 11; S.month.y--; } S.day = null; render(); };
+$("#mNext").onclick = () => { S.month.m++; if (S.month.m > 11) { S.month.m = 0; S.month.y++; } S.day = null; render(); };
+
+// ---------- calendar popover ----------
+const cal = { y: 0, m: 0 };
+const isoOf = (y, m, d) => { const dt = new Date(y, m, d); return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}`; };
+function renderCal() {
+  $("#calTitle").textContent = `${MONTHS[cal.m]} ${cal.y}`;
+  const first = new Date(cal.y, cal.m, 1);
+  const shift = (first.getDay() + 6) % 7;               // Monday-first
+  const start = 1 - shift;
+  const marks = {};
+  S.tx.forEach(t => { if (!t.date) return; const k = t.date; marks[k] = marks[k] || {}; marks[k][t.type] = 1; });
+  const today = todayISO();
+  let h = ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"].map(w => `<div class="wd">${w}</div>`).join("");
+  for (let i = 0; i < 42; i++) {
+    const iso = isoOf(cal.y, cal.m, start + i);
+    const dt = new Date(iso + "T12:00");
+    const out = dt.getMonth() !== cal.m;
+    const mk = marks[iso];
+    const dot = mk ? `<i class="${mk.exp ? "" : "inc"}"></i>` : "";
+    h += `<button type="button" class="d${out ? " out" : ""}${iso === today ? " today" : ""}${iso === S.day ? " sel" : ""}" data-day="${iso}"
+      aria-label="${dt.getDate()} ${MONTHS_G[dt.getMonth()]} ${dt.getFullYear()}${mk ? ", есть операции" : ""}">${dt.getDate()}${dot}</button>`;
+  }
+  $("#calGrid").innerHTML = h;
+}
+function openCal() { cal.y = S.month.y; cal.m = S.month.m; renderCal(); $("#cal").classList.add("open"); $("#mLabel").setAttribute("aria-expanded", "true"); haptic("light"); }
+function closeCal() { $("#cal").classList.remove("open"); $("#mLabel").setAttribute("aria-expanded", "false"); }
+function pickDay(iso) {
+  const [y, m] = iso.split("-").map(Number);
+  S.month = { y, m: m - 1 }; S.day = iso;
+  closeCal(); setTab("history"); render(); haptic("light");
+}
+$("#mLabel").onclick = e => { e.stopPropagation(); $("#cal").classList.contains("open") ? closeCal() : openCal(); };
+$("#calPrev").onclick = e => { e.stopPropagation(); cal.m--; if (cal.m < 0) { cal.m = 11; cal.y--; } renderCal(); };
+$("#calNext").onclick = e => { e.stopPropagation(); cal.m++; if (cal.m > 11) { cal.m = 0; cal.y++; } renderCal(); };
+$("#calGrid").onclick = e => { const b = e.target.closest("[data-day]"); if (b) pickDay(b.dataset.day); };
+$("#calToday").onclick = () => pickDay(todayISO());
+$("#calMonth").onclick = () => { S.month = { y: cal.y, m: cal.m }; S.day = null; closeCal(); render(); };
+$("#cal").addEventListener("click", e => e.stopPropagation());
+document.addEventListener("click", e => { if ($("#cal").classList.contains("open") && !e.target.closest("#cal")) closeCal(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeCal(); });
+document.addEventListener("click", e => { if (e.target.closest("#dayChip")) { S.day = null; renderHistory(); } });
 ["#q", "#fType", "#fCat"].forEach(s => $(s).addEventListener("input", renderHistory));
 
 // ---------- modals ----------
