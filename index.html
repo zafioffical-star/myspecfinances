@@ -341,13 +341,60 @@ body.locked .wrap,body.locked .fab{visibility:hidden}
 .acc .who{flex:1;min-width:0}
 .acc .who b{display:block;font-size:14px}
 .acc .who small{color:var(--muted);font-size:12px}
+/* ===== light skin (eye toggle) ===== */
+:root:root:root[data-skin=light]{
+  color-scheme: light;
+  --bg:#fff; --surface:#f6f6f6; --surface-2:#ececec; --line:#e4e4e4;
+  --text:#0b0b0b; --text-2:#5b5b5b; --muted:#8a8a8a;
+  --accent:#000; --accent-ink:#fff;
+  --exp:#e23d5b; --inc:#13a86a; --good:#13a86a; --warn:#c48600; --crit:#e23d5b; --s0:#a9b0bf;
+}
+:root[data-skin=light],:root[data-skin=light] body{background:#fff}
+:root[data-skin=light] .brand .dot{background:#000;color:#fff}
+:root[data-skin=light] .gear{color:#000}
+:root[data-skin=light] #mLabel:hover,:root[data-skin=light] .gear:hover,:root[data-skin=light] .btn:hover{background:#e2e2e2}
+:root[data-skin=light] nav.tabs button.on{color:#000}
+:root[data-skin=light] nav.tabs .ind{background:#000}
+:root[data-skin=light] .btn.pri{background:#000;color:#fff}
+:root[data-skin=light] .btn.pri:hover{background:#222}
+:root[data-skin=light] .fab{background:#000;color:#fff;box-shadow:0 8px 24px rgba(0,0,0,.22)}
+:root[data-skin=light] .modal{background:#fff}
+:root[data-skin=light] .ov{background:rgba(0,0,0,.35)}
+:root[data-skin=light] .fld:focus,:root[data-skin=light] .limit:focus,:root[data-skin=light] .filters input:focus,:root[data-skin=light] .filters select:focus{outline-color:#000}
+:root[data-skin=light] .bigamt:focus-within{border-color:#000}
+:root[data-skin=light] .seg button.on{background:#000;color:#fff}
+:root[data-skin=light] .seg button.on.exp{background:var(--exp);color:#fff}
+:root[data-skin=light] .seg button.on.inc{background:var(--inc);color:#fff}
+:root[data-skin=light] .chip.on{background:#000;color:#fff;border-color:#000}
+:root[data-skin=light] .tip,:root[data-skin=light] .toast{background:#000;color:#fff}
+:root[data-skin=light] .palopt.on{border-color:#000}
+:root[data-skin=light] .cal{background:#fff;border-color:#e6e6e6;box-shadow:0 24px 60px rgba(0,0,0,.16)}
+:root[data-skin=light] .cal .wd,:root[data-skin=light] .cal .d{color:#000}
+:root[data-skin=light] .cal .ch .nav button:hover,:root[data-skin=light] .cal .cf button:hover,:root[data-skin=light] .cal .d:hover{background:#efefef;color:#000}
+:root[data-skin=light] .cal .d.out{color:#b5b5b5}
+:root[data-skin=light] .cal .d.today{background:#000;color:#fff}
+:root[data-skin=light] .cal .d.sel{box-shadow:inset 0 0 0 2px #000}
+:root[data-skin=light] .cal .d.today.sel{box-shadow:inset 0 0 0 2px #000,0 0 0 2px #fff,0 0 0 4px #000}
+:root[data-skin=light] .cal .cf{border-top-color:#eee}
+:root[data-skin=light] .daychip{background:#000;color:#fff}
+:root[data-skin=light] .minus{color:#e07a1f}
+:root[data-skin=light] .tx.flash{animation:flashL 1.4s ease-out}
+@keyframes flashL{0%{background:rgba(0,0,0,.08)}100%{background:transparent}}
+/* header: theme toggle left, month centre, settings right */
+.hrow{display:grid;grid-template-columns:40px 1fr 40px;align-items:center;gap:10px}
+.hrow .month{justify-self:center}
+.themebtn svg{transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.themebtn.blink svg{animation:blink .38s ease}
+@keyframes blink{0%,100%{transform:scaleY(1)}45%{transform:scaleY(.08)}}
+html.theming body,html.theming body *{transition:background-color .4s ease,color .4s ease,border-color .4s ease,fill .4s ease,box-shadow .4s ease!important}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
-    <div class="brand"><div class="dot"><svg viewBox="0 0 32 32" width="20" height="20" aria-hidden="true"><g fill="#000"><rect x="4" y="19" width="5" height="9" rx="1.5"/><rect x="11" y="14" width="5" height="14" rx="1.5"/><rect x="18" y="17" width="5" height="11" rx="1.5"/><rect x="25" y="9" width="5" height="19" rx="1.5" opacity=".55"/></g><path d="M4.5 13 L13.5 7 L20 10 L28.5 2.8" fill="none" stroke="#000" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M23.6 2.4 L29 2.3 L28.8 7.6" fill="none" stroke="#000" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Мои финансы</div>
+    <div class="brand"><div class="dot"><svg viewBox="0 0 32 32" width="20" height="20" aria-hidden="true"><g fill="currentColor"><rect x="4" y="19" width="5" height="9" rx="1.5"/><rect x="11" y="14" width="5" height="14" rx="1.5"/><rect x="18" y="17" width="5" height="11" rx="1.5"/><rect x="25" y="9" width="5" height="19" rx="1.5" opacity=".55"/></g><path d="M4.5 13 L13.5 7 L20 10 L28.5 2.8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M23.6 2.4 L29 2.3 L28.8 7.6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Мои финансы</div>
     <div class="hrow">
+    <button class="iconbtn gear themebtn" id="themeBtn" aria-label="Сменить тему"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M1.8 12s3.7-7 10.2-7 10.2 7 10.2 7-3.7 7-10.2 7S1.8 12 1.8 12z" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linejoin="round"/><circle cx="12" cy="12" r="3.4" fill="currentColor"/></svg></button>
     <div class="month">
       <button class="iconbtn" id="mPrev" aria-label="Предыдущий месяц">‹</button>
       <button id="mLabel" aria-haspopup="dialog" aria-expanded="false"></button>
@@ -630,6 +677,7 @@ const DEFAULT_SETTINGS = () => ({
   investments: [],
   palette: "brand",
   v3: true,
+  theme: "dark",
 });
 
 // ---------- state ----------
@@ -793,6 +841,7 @@ function normSettings(s) {
     goals: Array.isArray(s.goals) ? s.goals.map(g => ({ ...g })) : [],
     investments: Array.isArray(s.investments) ? s.investments.map(x => ({ ...x })) : [],
     palette: !s.v3 ? "brand" : (s.palette || "brand"),
+    theme: s.theme === "light" ? "light" : "dark",
     v3: true,
   };
 }
@@ -854,7 +903,7 @@ const sortTx = arr => arr.sort((a, b) => (b.date || "").localeCompare(a.date || 
 function render() {
   $("#mLabel").textContent = `${MONTHS[S.month.m]} ${S.month.y}`;
   $$(".cur").forEach(e => e.textContent = S.settings.currency);
-  applyPalette();
+  applySkin(); applyPalette();
   renderOverview(); renderHistory(); renderBudgets(); renderGoals(); renderInvest();
   if ($("#setOv").classList.contains("open")) renderSettings();
 }
@@ -1089,6 +1138,22 @@ document.addEventListener("click", e => {
   toast("Цвета: " + (PALETTES.find(x => x.id === b.dataset.pal) || {}).name);
 });
 
+// ---------- light / dark skin ----------
+function applySkin() {
+  const sk = S.settings.theme === "light" ? "light" : "dark";
+  document.documentElement.dataset.skin = sk;
+  const tgw = window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData ? window.Telegram.WebApp : null;
+  if (tgw) { const c = sk === "light" ? "#ffffff" : "#000000"; try { tgw.setHeaderColor(c); tgw.setBackgroundColor(c); if (tgw.setBottomBarColor) tgw.setBottomBarColor(c); } catch (e) {} }
+}
+$("#themeBtn").onclick = () => {
+  const b = $("#themeBtn"); b.classList.remove("blink"); void b.offsetWidth; b.classList.add("blink");
+  document.documentElement.classList.add("theming");
+  S.settings.theme = S.settings.theme === "light" ? "dark" : "light";
+  store.putSettings();
+  setTimeout(() => document.documentElement.classList.remove("theming"), 450);
+  if (typeof haptic === "function") haptic("light");
+};
+
 // ---------- donut ----------
 function plural(n, one, few, many) { const m10 = n % 10, m100 = n % 100; return m10 === 1 && m100 !== 11 ? one : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? few : many; }
 function pctStr(f) { const p = f * 100; return (p > 0 && p < 1 ? "<1" : Math.round(p)) + "%"; }
@@ -1250,6 +1315,7 @@ function setTab(t) {
   ["overview", "history", "budgets", "goals", "invest"].forEach(x => $("#tab-" + x).classList.toggle("hidden", x !== t));
   const sec = $("#tab-" + t); sec.classList.remove("enter"); void sec.offsetWidth; sec.classList.add("enter");
   if (t === "overview") chartAnim = true;
+  $("#fab").classList.toggle("hidden", t !== "overview");
   moveInd();
   window.scrollTo(0, 0);
 }
