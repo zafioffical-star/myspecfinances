@@ -268,12 +268,68 @@ nav.tabs button.on::after{content:"";position:absolute;left:0;right:0;bottom:-1p
 .palopt .sws{display:flex;gap:4px}
 .palopt .sws i{width:15px;height:15px;border-radius:4px;display:block}
 .palopt .nm small{display:block;font-weight:500;color:var(--muted);font-size:12px;margin-top:2px}
+/* ===== motion ===== */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+@keyframes fabIn{from{opacity:0;translate:0 24px;scale:.9}to{opacity:1;translate:0 0;scale:1}}
+@keyframes ovIn{from{opacity:0}to{opacity:1}}
+@keyframes ovOut{from{opacity:1}to{opacity:0}}
+@keyframes sheetIn{from{transform:translateY(100%)}to{transform:none}}
+@keyframes sheetOut{from{transform:none}to{transform:translateY(100%)}}
+@keyframes popIn{from{opacity:0;transform:scale(.94) translateY(-6px)}to{opacity:1;transform:none}}
+@keyframes donutIn{from{opacity:0;transform:rotate(-80deg) scale(.86)}to{opacity:1;transform:none}}
+@keyframes barUp{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes growX{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes tick{0%{opacity:.35;transform:translateY(6px)}100%{opacity:1;transform:none}}
+@keyframes flash{0%{background:rgba(255,255,255,.14)}100%{background:transparent}}
+header.top{animation:fadeDown .5s cubic-bezier(.2,.8,.2,1) both;position:relative;z-index:30}
+nav.tabs{animation:fadeUp .5s .06s cubic-bezier(.2,.8,.2,1) both}
+.fab{animation:fabIn .55s .3s cubic-bezier(.2,.9,.25,1.15) both}
+.enter > *{animation:fadeUp .45s cubic-bezier(.2,.8,.2,1) both}
+.enter > *:nth-child(2){animation-delay:.05s}.enter > *:nth-child(3){animation-delay:.1s}.enter > *:nth-child(4){animation-delay:.15s}.enter > *:nth-child(5){animation-delay:.2s}.enter > *:nth-child(n+6){animation-delay:.24s}
+.enter .stats > .stat{animation:fadeUp .45s cubic-bezier(.2,.8,.2,1) both}
+.enter .stats > .stat:nth-child(2){animation-delay:.04s}.enter .stats > .stat:nth-child(3){animation-delay:.08s}.enter .stats > .stat:nth-child(4){animation-delay:.12s}
+.enter .tx,.enter .goal,.enter .inv,.enter .bud{animation:fadeUp .4s cubic-bezier(.2,.8,.2,1) both}
+.enter .tx:nth-child(2),.enter .goal:nth-child(2),.enter .inv:nth-child(2),.enter .bud:nth-child(2){animation-delay:.04s}
+.enter .tx:nth-child(3),.enter .goal:nth-child(3),.enter .inv:nth-child(3),.enter .bud:nth-child(3){animation-delay:.08s}
+.enter .tx:nth-child(n+4),.enter .goal:nth-child(n+4),.enter .inv:nth-child(n+4),.enter .bud:nth-child(n+4){animation-delay:.12s}
+.enter .fill{animation:growX .7s .15s cubic-bezier(.2,.8,.2,1) both;transform-origin:left}
+.enter .donut svg,.donut.anim svg{animation:donutIn .7s cubic-bezier(.2,.8,.2,1) both}
+.donut .ctr{transition:opacity .2s}
+.chart.anim .bar{animation:barUp .55s cubic-bezier(.2,.8,.2,1) both;transform-box:fill-box;transform-origin:50% 100%;animation-delay:calc(var(--i,0) * 14ms)}
+.v.tick{animation:tick .35s cubic-bezier(.2,.8,.2,1)}
+.tx.flash{animation:flash 1.4s ease-out}
+.btn,.iconbtn,.chip,.seg button,.tx,.palopt,.cal .d,nav.tabs button,#mLabel,.daychip,.fab,.catrow{transition:scale .14s cubic-bezier(.2,.8,.2,1),background-color .18s,color .18s,border-color .18s,box-shadow .18s,opacity .18s}
+.btn:active,.iconbtn:active,.chip:active,.seg button:active,.palopt:active,.cal .d:active,#mLabel:active,.daychip:active{scale:.94}
+.tx:active{scale:.985}
+.fab:active{scale:.93}
+.gear svg{transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.gear:hover svg,.gear:active svg{transform:rotate(60deg)}
+nav.tabs{position:relative}
+nav.tabs button.on::after{display:none}
+nav.tabs .ind{position:absolute;left:0;bottom:-1px;height:2px;width:0;background:#fff;border-radius:2px;transition:transform .32s cubic-bezier(.2,.8,.2,1),width .32s cubic-bezier(.2,.8,.2,1);pointer-events:none}
+.ov.open{animation:ovIn .2s ease both}
+.ov.open .modal{animation:sheetIn .34s cubic-bezier(.2,.9,.2,1) both}
+@media (min-width:640px){.ov.open .modal{animation:popIn .26s cubic-bezier(.2,.9,.2,1) both}}
+.ov.closing{animation:ovOut .2s ease both}
+.ov.closing .modal{animation:sheetOut .22s cubic-bezier(.4,0,.8,.4) both}
+@media (min-width:640px){.ov.closing .modal{animation:ovOut .18s ease both}}
+.cal.open{animation:popIn .2s cubic-bezier(.2,.9,.2,1) both;transform-origin:20% 0}
+.toast{transition:opacity .22s,transform .3s cubic-bezier(.2,.9,.25,1.2)}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+.hrow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex:1 1 100%}
+.brand{margin-right:0}
+.chart .bar{opacity:.38;transition:opacity .16s}
+.chart .bar.hot{opacity:1}
+html,body,*{scrollbar-width:none;-ms-overflow-style:none}
+::-webkit-scrollbar{width:0!important;height:0!important;display:none}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
     <div class="brand"><div class="dot"><svg viewBox="0 0 32 32" width="20" height="20" aria-hidden="true"><g fill="#000"><rect x="4" y="19" width="5" height="9" rx="1.5"/><rect x="11" y="14" width="5" height="14" rx="1.5"/><rect x="18" y="17" width="5" height="11" rx="1.5"/><rect x="25" y="9" width="5" height="19" rx="1.5" opacity=".55"/></g><path d="M4.5 13 L13.5 7 L20 10 L28.5 2.8" fill="none" stroke="#000" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M23.6 2.4 L29 2.3 L28.8 7.6" fill="none" stroke="#000" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Мои финансы</div>
+    <div class="hrow">
     <div class="month">
       <button class="iconbtn" id="mPrev" aria-label="Предыдущий месяц">‹</button>
       <button id="mLabel" aria-haspopup="dialog" aria-expanded="false"></button>
@@ -288,9 +344,10 @@ nav.tabs button.on::after{content:"";position:absolute;left:0;right:0;bottom:-1p
       <button class="iconbtn" id="mNext" aria-label="Следующий месяц">›</button>
     </div>
     <button class="iconbtn gear" id="openSettings" aria-label="Настройки"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><g fill="currentColor"><rect x="10" y="1.2" width="4" height="5.2" rx="1.2" transform="rotate(0 12 12)"/><rect x="10" y="1.2" width="4" height="5.2" rx="1.2" transform="rotate(45 12 12)"/><rect x="10" y="1.2" width="4" height="5.2" rx="1.2" transform="rotate(90 12 12)"/><rect x="10" y="1.2" width="4" height="5.2" rx="1.2" transform="rotate(135 12 12)"/><rect x="10" y="1.2" width="4" height="5.2" rx="1.2" transform="rotate(180 12 12)"/><rect x="10" y="1.2" width="4" height="5.2" rx="1.2" transform="rotate(225 12 12)"/><rect x="10" y="1.2" width="4" height="5.2" rx="1.2" transform="rotate(270 12 12)"/><rect x="10" y="1.2" width="4" height="5.2" rx="1.2" transform="rotate(315 12 12)"/><path fill-rule="evenodd" d="M12 4.6a7.4 7.4 0 1 1 0 14.8a7.4 7.4 0 1 1 0-14.8zM12 8.9a3.1 3.1 0 1 0 0 6.2a3.1 3.1 0 1 0 0-6.2z"/></g></svg></button>
+    </div>
   </header>
 
-  <nav class="tabs" role="tablist">
+  <nav class="tabs" role="tablist"><span class="ind" aria-hidden="true"></span>
     <button data-tab="overview" class="on">Обзор</button>
     <button data-tab="history">История</button>
     <button data-tab="invest">Инвестиции</button>
@@ -781,16 +838,23 @@ function render() {
   if ($("#setOv").classList.contains("open")) renderSettings();
 }
 
+let chartAnim = true, lastYm = "";
+function setNum(sel, txt, cls) {
+  const e = $(sel), changed = e.textContent !== txt && e.textContent !== "—";
+  e.textContent = txt; e.className = cls;
+  if (changed) { void e.offsetWidth; e.classList.add("tick"); }
+}
 function renderOverview() {
+  if (ym() !== lastYm) { lastYm = ym(); chartAnim = true; }
   const tx = monthTx();
   const exp = tx.filter(t => t.type === "exp").reduce((s, t) => s + t.amount, 0);
   const inc = tx.filter(t => t.type === "inc").reduce((s, t) => s + t.amount, 0);
   const bal = inc - exp;
-  $("#sExp").textContent = money(exp, 1); $("#sExp").className = "v" + (exp ? " neg" : "");
+  setNum("#sExp", money(exp, 1), "v" + (exp ? " neg" : ""));
   $("#sExpD").textContent = (n => `${n} ${plural(n, "операция", "операции", "операций")}`)(tx.filter(t => t.type === "exp").length);
-  $("#sInc").textContent = money(inc, 1); $("#sInc").className = "v" + (inc ? " pos" : "");
+  setNum("#sInc", money(inc, 1), "v" + (inc ? " pos" : ""));
   $("#sIncD").textContent = (n => `${n} ${plural(n, "операция", "операции", "операций")}`)(tx.filter(t => t.type === "inc").length);
-  const sb = $("#sBal"); sb.textContent = (bal > 0 ? "+" : "") + money(bal, 1); sb.className = "v" + (bal < 0 ? " minus" : "");
+  setNum("#sBal", (bal > 0 ? "+" : "") + money(bal, 1), "v" + (bal < 0 ? " minus" : ""));
   $("#sBalD").textContent = inc ? `сохранено ${Math.max(0, Math.round(bal / inc * 100))}% дохода` : "доходов пока нет";
   const tb = S.settings.budgets.total;
   if (tb > 0) {
@@ -808,6 +872,7 @@ function renderOverview() {
   const passed = isCur ? now.getDate() : (new Date(S.month.y, S.month.m) < now ? n : 0);
   $("#dailyAvg").textContent = exp && passed ? `в среднем ${money(exp / passed, 1)} в день` : "";
   drawDaily(days);
+  if (chartAnim) { $("#daily").classList.add("anim"); setTimeout(() => { chartAnim = false; }, 0); } else $("#daily").classList.remove("anim");
 
   // categories: donut (colored categories individually, the rest folded into "Другое") + full list
   const by = {};
@@ -833,6 +898,7 @@ function renderOverview() {
         <div class="amt">${esc(money(v, 1))}</div><div class="pct">${pctStr(v / exp)}</div></div>`;
     }).join("");
     drawDonut($("#catDonut"), segs, "Расходы", money(exp, 1), $("#cats"));
+    if (chartAnim) $("#catDonut").classList.add("anim");
   }
 
   const rec = sortTx(tx).slice(0, 5);
@@ -858,7 +924,7 @@ function drawDaily(days) {
     const x = padL + i * bw + gap / 2, w = bw - gap, h = v / nice * ih, y = padT + ih - h;
     if (v > 0) {
       const r = Math.min(4, w / 2, h);
-      g += `<path d="M${x},${padT + ih} V${y + r} Q${x},${y} ${x + r},${y} H${x + w - r} Q${x + w},${y} ${x + w},${y + r} V${padT + ih} Z" fill="var(--accent)" class="bar" data-i="${i}"/>`;
+      g += `<path d="M${x},${padT + ih} V${y + r} Q${x},${y} ${x + r},${y} H${x + w - r} Q${x + w},${y} ${x + w},${y + r} V${padT + ih} Z" fill="var(--accent)" class="bar" data-i="${i}" style="--i:${i}"/>`;
     }
     g += `<rect x="${padL + i * bw}" y="${padT}" width="${bw}" height="${ih + padB}" fill="transparent" data-i="${i}" class="hit"/>`;
     const d = i + 1;
@@ -874,9 +940,9 @@ function drawDaily(days) {
     const rect = svg.getBoundingClientRect(), sc = rect.width / W;
     const x = (padL + i * bw + bw / 2) * sc, y = (padT + ih - v / nice * ih) * sc - 6;
     tip.style.left = Math.min(Math.max(x, 70), rect.width - 70) + "px"; tip.style.top = y + "px"; tip.classList.add("show");
-    svg.querySelectorAll(".bar").forEach(b => b.style.opacity = +b.dataset.i === i ? 1 : .45);
+    svg.querySelectorAll(".bar").forEach(b => b.classList.toggle("hot", +b.dataset.i === i));
   };
-  const hide = () => { tip.classList.remove("show"); svg.querySelectorAll(".bar").forEach(b => b.style.opacity = 1); };
+  const hide = () => { tip.classList.remove("show"); svg.querySelectorAll(".bar").forEach(b => b.classList.remove("hot")); };
   svg.querySelectorAll(".hit").forEach(h => {
     h.addEventListener("mouseenter", () => show(+h.dataset.i));
     h.addEventListener("click", () => show(+h.dataset.i));
@@ -890,7 +956,7 @@ function txRow(t) {
   const c = catInfo(t.cat);
   const sign = t.type === "inc" ? "+" : "−";
   const sub = t.note ? esc(t.note) : esc(fmtDate(t.date));
-  return `<div class="tx" data-tx="${esc(t.id)}">
+  return `<div class="tx${t.id === S.flash ? " flash" : ""}" data-tx="${esc(t.id)}">
     <div class="ic" style="${t.type === "exp" ? `box-shadow:inset 0 0 0 2px color-mix(in srgb, ${catColor(t.cat)} 45%, transparent)` : ""}">${esc(c.emoji)}</div>
     <div class="mid"><div class="t1">${esc(c.name)}</div><div class="t2">${sub}</div></div>
     <div class="sum ${t.type === "inc" ? "pos" : "neg"}">${sign}${esc(money(t.amount))}</div></div>`;
@@ -1005,6 +1071,7 @@ document.addEventListener("click", e => {
 function plural(n, one, few, many) { const m10 = n % 10, m100 = n % 100; return m10 === 1 && m100 !== 11 ? one : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? few : many; }
 function pctStr(f) { const p = f * 100; return (p > 0 && p < 1 ? "<1" : Math.round(p)) + "%"; }
 function drawDonut(box, segs, cLabel, cValue, legend) {
+  box.classList.remove("anim");
   const total = segs.reduce((s, x) => s + x.value, 0);
   const R = 100, r = 66, mid = (R + r) / 2, w = R - r, C = 2 * Math.PI * mid;
   const gap = segs.length > 1 ? 2.5 : 0;
@@ -1148,10 +1215,20 @@ $("#invOpForm").onsubmit = e => {
 };
 
 // ---------- tabs & month ----------
+function moveInd() {
+  const b = $("nav.tabs button.on"), ind = $("nav.tabs .ind"); if (!b || !ind) return;
+  ind.style.width = b.offsetWidth + "px"; ind.style.transform = `translateX(${b.offsetLeft}px)`;
+}
+window.addEventListener("resize", moveInd);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(moveInd);
+setTimeout(moveInd, 60);
 function setTab(t) {
   S.tab = t;
   $$("nav.tabs button").forEach(b => b.classList.toggle("on", b.dataset.tab === t));
   ["overview", "history", "budgets", "goals", "invest"].forEach(x => $("#tab-" + x).classList.toggle("hidden", x !== t));
+  const sec = $("#tab-" + t); sec.classList.remove("enter"); void sec.offsetWidth; sec.classList.add("enter");
+  if (t === "overview") chartAnim = true;
+  moveInd();
   window.scrollTo(0, 0);
 }
 $$("nav.tabs button").forEach(b => b.onclick = () => setTab(b.dataset.tab));
@@ -1203,8 +1280,12 @@ document.addEventListener("click", e => { if (e.target.closest("#dayChip")) { S.
 
 // ---------- modals ----------
 const syncBack = () => { if (!tg || !tg.BackButton) return; try { $$(".ov.open").length ? tg.BackButton.show() : tg.BackButton.hide(); } catch (e) {} };
-const open = id => { $(id).classList.add("open"); syncBack(); haptic("light"); };
-const close = el => { el.classList.remove("open"); syncBack(); };
+const open = id => { const el = $(id); clearTimeout(el._ct); el.classList.remove("closing"); el.classList.add("open"); syncBack(); haptic("light"); };
+const close = el => {
+  if (!el.classList.contains("open") || el.classList.contains("closing")) return;
+  el.classList.add("closing");
+  el._ct = setTimeout(() => { el.classList.remove("open", "closing"); syncBack(); }, 210);
+};
 if (tg && tg.BackButton) tg.BackButton.onClick(() => { const o = $$(".ov.open"); if (o.length) close(o[o.length - 1]); });
 $$(".ov").forEach(ov => {
   ov.addEventListener("mousedown", e => { if (e.target === ov) close(ov); });
@@ -1245,6 +1326,7 @@ $("#txForm").onsubmit = e => {
   if (!txCat) { $("#txErr").textContent = "Выберите категорию (добавить можно в настройках)"; return; }
   const date = $("#txDate").value || todayISO();
   const t = { id: txEdit ? txEdit.id : uid(), type: txType, amount, cat: txCat, date, note: $("#txNote").value.trim(), created: txEdit ? txEdit.created : Date.now() };
+  S.flash = t.id; setTimeout(() => { S.flash = null; }, 1500);
   store.putTx(t); haptic("success");
   close($("#txOv"));
   toast(txEdit ? "Изменено" : (txType === "exp" ? "Расход записан" : "Доход записан"));
@@ -1420,6 +1502,7 @@ $("#copyCsv").onclick = async () => {
 };
 
 // ---------- start ----------
+$("#tab-overview").classList.add("enter");
 initStorage();
 })();
 </script>
