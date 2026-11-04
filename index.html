@@ -263,13 +263,16 @@ nav.tabs button.on::after{content:"";position:absolute;left:0;right:0;bottom:-1p
 .minus{color:#ff9a3c}
 .v.low{color:var(--warn)}
 .v.half{color:#ff9a3c}
+:root{--half:#ff9a3c}
+:root[data-skin=light]{--half:#e07a1f}
 :root[data-skin=light] .v.half{color:#e07a1f}
 .dayhd .net{color:var(--text)}
 .palpick{display:grid;gap:8px}
 .palopt{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--surface-2);border:1px solid transparent;border-radius:12px;padding:11px 12px;font-weight:600;font-size:14px;text-align:left}
 .palopt.on{border-color:#fff}
 .palopt .sws{display:flex;gap:4px}
-.palopt .sws i{width:15px;height:15px;border-radius:4px;display:block}
+.palopt .sws i{width:11px;height:15px;border-radius:3px;display:block}
+.palopt .sws{gap:3px}
 .palopt .nm small{display:block;font-weight:500;color:var(--muted);font-size:12px;margin-top:2px}
 /* ===== motion ===== */
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
@@ -431,27 +434,17 @@ html.theming body,html.theming body *{transition:background-color .4s ease,color
 .chart .ybar.dim{opacity:.35}
 #fPeriod{margin-bottom:10px}
 .pricenote{font-size:12px;color:var(--muted);margin-top:4px}
+.hrow .brand{justify-self:center;margin:0;font-size:19px}
+.histmonth{display:flex;justify-content:center;margin:0 0 14px;position:relative;z-index:20}
+.histmonth .cal{left:50%;margin-left:-150px;transform-origin:50% 0}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
-    <div class="brand"><div class="dot"><svg viewBox="0 0 32 32" width="20" height="20" aria-hidden="true"><g fill="currentColor"><rect x="4" y="19" width="5" height="9" rx="1.5"/><rect x="11" y="14" width="5" height="14" rx="1.5"/><rect x="18" y="17" width="5" height="11" rx="1.5"/><rect x="25" y="9" width="5" height="19" rx="1.5" opacity=".55"/></g><path d="M4.5 13 L13.5 7 L20 10 L28.5 2.8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M23.6 2.4 L29 2.3 L28.8 7.6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Мои финансы</div>
     <div class="hrow">
     <button class="iconbtn gear themebtn" id="themeBtn" aria-label="Сменить тему"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M1.8 12s3.7-7 10.2-7 10.2 7 10.2 7-3.7 7-10.2 7S1.8 12 1.8 12z" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linejoin="round"/><circle cx="12" cy="12" r="3.4" fill="currentColor"/></svg></button>
-    <div class="month">
-      <button class="iconbtn" id="mPrev" aria-label="Предыдущий месяц">‹</button>
-      <button id="mLabel" aria-haspopup="dialog" aria-expanded="false"></button>
-      <div class="cal" id="cal" role="dialog" aria-label="Календарь">
-        <div class="ch"><b id="calTitle"></b><div class="nav">
-          <button type="button" id="calPrev" aria-label="Предыдущий месяц"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 3 L11 9 H1z" fill="currentColor"/></svg></button>
-          <button type="button" id="calNext" aria-label="Следующий месяц"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 9 L11 3 H1z" fill="currentColor"/></svg></button>
-        </div></div>
-        <div class="grid" id="calGrid"></div>
-        <div class="cf"><button type="button" id="calToday">Сегодня</button><button type="button" id="calMonth">Весь месяц</button></div>
-      </div>
-      <button class="iconbtn" id="mNext" aria-label="Следующий месяц">›</button>
-    </div>
+    <div class="brand"><div class="dot"><svg viewBox="0 0 32 32" width="20" height="20" aria-hidden="true"><g fill="currentColor"><rect x="4" y="19" width="5" height="9" rx="1.5"/><rect x="11" y="14" width="5" height="14" rx="1.5"/><rect x="18" y="17" width="5" height="11" rx="1.5"/><rect x="25" y="9" width="5" height="19" rx="1.5" opacity=".55"/></g><path d="M4.5 13 L13.5 7 L20 10 L28.5 2.8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M23.6 2.4 L29 2.3 L28.8 7.6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Мои финансы</div>
     <button class="iconbtn gear" id="openSettings" aria-label="Настройки"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><g fill="currentColor"><rect x="10" y="1.2" width="4" height="5.2" rx="1.2" transform="rotate(0 12 12)"/><rect x="10" y="1.2" width="4" height="5.2" rx="1.2" transform="rotate(45 12 12)"/><rect x="10" y="1.2" width="4" height="5.2" rx="1.2" transform="rotate(90 12 12)"/><rect x="10" y="1.2" width="4" height="5.2" rx="1.2" transform="rotate(135 12 12)"/><rect x="10" y="1.2" width="4" height="5.2" rx="1.2" transform="rotate(180 12 12)"/><rect x="10" y="1.2" width="4" height="5.2" rx="1.2" transform="rotate(225 12 12)"/><rect x="10" y="1.2" width="4" height="5.2" rx="1.2" transform="rotate(270 12 12)"/><rect x="10" y="1.2" width="4" height="5.2" rx="1.2" transform="rotate(315 12 12)"/><path fill-rule="evenodd" d="M12 4.6a7.4 7.4 0 1 1 0 14.8a7.4 7.4 0 1 1 0-14.8zM12 8.9a3.1 3.1 0 1 0 0 6.2a3.1 3.1 0 1 0 0-6.2z"/></g></svg></button>
     </div>
   </header>
@@ -490,6 +483,21 @@ html.theming body,html.theming body *{transition:background-color .4s ease,color
   </section>
 
   <section id="tab-history" class="hidden">
+    <div class="histmonth">
+    <div class="month">
+      <button class="iconbtn" id="mPrev" aria-label="Предыдущий месяц">‹</button>
+      <button id="mLabel" aria-haspopup="dialog" aria-expanded="false"></button>
+      <div class="cal" id="cal" role="dialog" aria-label="Календарь">
+        <div class="ch"><b id="calTitle"></b><div class="nav">
+          <button type="button" id="calPrev" aria-label="Предыдущий месяц"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 3 L11 9 H1z" fill="currentColor"/></svg></button>
+          <button type="button" id="calNext" aria-label="Следующий месяц"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 9 L11 3 H1z" fill="currentColor"/></svg></button>
+        </div></div>
+        <div class="grid" id="calGrid"></div>
+        <div class="cf"><button type="button" id="calToday">Сегодня</button><button type="button" id="calMonth">Весь месяц</button></div>
+      </div>
+      <button class="iconbtn" id="mNext" aria-label="Следующий месяц">›</button>
+    </div>
+    </div>
     <div class="seg" id="fPeriod">
       <button type="button" data-v="month" class="on">Месяц</button>
       <button type="button" data-v="year">Год</button>
@@ -979,7 +987,7 @@ const catInfo = id => catById(id) || { id, name: "Другое", emoji: "•", t
 function catColor(id) {
   const exp = S.settings.categories.filter(c => c.type === "exp");
   const i = exp.findIndex(c => c.id === id);
-  return i >= 0 && i < 8 ? `var(--s${i + 1})` : "var(--s0)";
+  return i >= 0 && i < 12 ? `var(--s${i + 1})` : "var(--s0)";
 }
 const ym = () => `${S.month.y}-${pad(S.month.m + 1)}`;
 const monthTx = () => [...S.tx.values()].filter(t => t.date && t.date.startsWith(ym()));
@@ -1007,7 +1015,7 @@ function renderOverview() {
   const exp = tx.filter(t => t.type === "exp").reduce((s, t) => s + t.amount, 0);
   const inc = tx.filter(t => t.type === "inc").reduce((s, t) => s + t.amount, 0);
   const bal = inc - exp;
-  setNum("#sExp", money(exp, 1), "v");
+  setNum("#sExp", money(exp, 1), "v" + (exp ? " neg" : ""));
   $("#sExpD").textContent = (n => `${n} ${plural(n, "операция", "операции", "операций")}`)(tx.filter(t => t.type === "exp").length);
   setNum("#sInc", money(inc, 1), "v");
   $("#sIncD").textContent = (n => `${n} ${plural(n, "операция", "операции", "операций")}`)(tx.filter(t => t.type === "inc").length);
@@ -1163,7 +1171,7 @@ function renderBudgets() {
     const pct = has ? Math.min(100, spent / limit * 100) : 0;
     return `<div class="bud"><div class="row"><b>${label}</b>
       <input class="limit" data-limit="${esc(key)}" inputmode="decimal" placeholder="без лимита" value="${has ? limit : ""}" aria-label="Лимит: ${esc(label)}"></div>
-      ${has ? `<div class="track"><div class="fill" style="width:${Math.max(pct, spent ? 1.5 : 0)}%;background:${st === "crit" ? "var(--crit)" : st === "warn" ? "var(--warn)" : color}"></div></div>` : ""}
+      ${has ? `<div class="track"><div class="fill" style="width:${Math.max(pct, spent ? 1.5 : 0)}%;background:${key === "__total" ? (limit - spent <= limit * 0.2 ? "var(--exp)" : limit - spent <= limit * 0.5 ? "var(--half)" : "var(--text)") : st === "crit" ? "var(--crit)" : st === "warn" ? "var(--warn)" : color}"></div></div>` : ""}
       <div class="meta"><span>Потрачено ${esc(money(spent))}${has ? ` из ${esc(money(limit))}` : ""}</span>
       ${has ? `<span>${spent <= limit ? "осталось " + esc(money(limit - spent)) : "сверх лимита " + esc(money(spent - limit))} <span class="badge ${st}">${stl}</span></span>` : ""}</div></div>`;
   };
@@ -1205,14 +1213,14 @@ function renderSettings() {
 }
 
 let rsz; window.addEventListener("resize", () => { clearTimeout(rsz); rsz = setTimeout(renderOverview, 150); });
-// ---------- category palettes (each validated for the dark surface: lightness band, chroma, CVD & normal-vision separation, contrast) ----------
+// ---------- category palettes: 12 colours each, chosen and ordered so the first categories get the most different colours (dark-surface lightness band, CVD- and normal-vision separation) ----------
 const PALETTES = [
-  { id: "brand", name: "Фирменная", sub: "синий и зелёный, как на аватарке", c: ["#337ee3","#01ab70","#5299c8","#6741ca","#0ea3b0","#05893e","#a843be","#07957c"] },
-  { id: "std", name: "Стандарт", sub: "сбалансированная", c: ["#3987e5","#d95926","#199e70","#c98500","#d55181","#008300","#9085e9","#e66767"] },
-  { id: "neon", name: "Неон", sub: "яркая, как на бирже", c: ["#079db6","#6ba304","#8a4af5","#04a97a","#0278e7","#c38406","#e5259a","#e14f02"] },
-  { id: "ocean", name: "Океан", sub: "холодные оттенки", c: ["#2389e2","#03aa8e","#735cc7","#0fa9b0","#a95cbb","#50a33d","#0886b0","#ac9008"] },
-  { id: "warm", name: "Закат", sub: "тёплые оттенки", c: ["#c38406","#de1d3f","#8658e1","#d96604","#01a760","#b62eb0","#929208","#de297b"] },
-  { id: "soft", name: "Мягкая", sub: "приглушённая", c: ["#5497d9","#c26b4c","#059eb1","#ac942f","#b4608a","#57873a","#806ab9","#3aac83"] },
+  { id: "brand", name: "Фирменная", sub: "синий и зелёный в основе", c: ["#337ee3", "#de7519", "#01ab70", "#9c347c", "#756202", "#6741ca", "#be79b8", "#b05649", "#5299c8", "#026c95", "#038870", "#a843be"] },
+  { id: "std", name: "Стандарт", sub: "сбалансированная", c: ["#3987e5", "#d95926", "#199e70", "#953490", "#885703", "#dd63a7", "#584fbf", "#c98500", "#057558", "#b05069", "#9273c7", "#0ba6c3"] },
+  { id: "neon", name: "Неон", sub: "яркая, как на бирже", c: ["#079db6", "#bb0121", "#8a4af5", "#c38406", "#f44c90", "#1f60bb", "#a5148f", "#057558", "#6d8bff", "#02a05e", "#7c7903", "#d15ddc"] },
+  { id: "ocean", name: "Океан", sub: "начинается с холодных", c: ["#2389e2", "#a63d02", "#50a33d", "#bc5fa8", "#057558", "#6a4daf", "#03aa8e", "#d67b19", "#936e09", "#99387b", "#0886b0", "#e1697c"] },
+  { id: "warm", name: "Закат", sub: "начинается с тёплых", c: ["#c38406", "#2858cd", "#ad1a6b", "#02a9b5", "#2e7601", "#8782fe", "#ed5790", "#01a760", "#de1d3f", "#9058b0", "#c468df", "#8658e1"] },
+  { id: "soft", name: "Мягкая", sub: "приглушённая", c: ["#5497d9", "#8d5403", "#ac942f", "#b4608a", "#535ca1", "#3aac83", "#057558", "#c26b4c", "#806ab9", "#059eb1", "#57873a", "#89497b"] },
 ];
 function applyPalette() {
   const P = PALETTES.find(x => x.id === S.settings.palette) || PALETTES[0];
@@ -1441,6 +1449,9 @@ window.addEventListener("resize", moveInd);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(moveInd);
 setTimeout(moveInd, 60);
 function setTab(t) {
+  if (S.tab === "history" && t !== "history") {
+    const d = new Date(); S.month = { y: d.getFullYear(), m: d.getMonth() }; S.day = null; closeCal(); render();
+  }
   S.tab = t;
   $$("nav.tabs button").forEach(b => b.classList.toggle("on", b.dataset.tab === t));
   ["overview", "history", "budgets", "goals", "invest"].forEach(x => $("#tab-" + x).classList.toggle("hidden", x !== t));
@@ -1551,7 +1562,7 @@ $("#txForm").onsubmit = e => {
   toast(txEdit ? "Изменено" : (txType === "exp" ? "Расход записан" : "Доход записан"));
   // jump to that month if needed
   const [y, m] = date.split("-").map(Number);
-  if (y !== S.month.y || m - 1 !== S.month.m) { S.month = { y, m: m - 1 }; render(); }
+  if (S.tab === "history" && (y !== S.month.y || m - 1 !== S.month.m)) { S.month = { y, m: m - 1 }; render(); }
 };
 let delArm = 0;
 $("#txDel").onclick = () => {
